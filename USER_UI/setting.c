@@ -34,16 +34,22 @@
 #define ID_TEXT_0 (GUI_ID_USER + 0x01)
 #define ID_TEXT_1 (GUI_ID_USER + 0x02)
 #define ID_TEXT_2 (GUI_ID_USER + 0x03)
-#define ID_SLIDER_0 (GUI_ID_USER + 0x04)
-#define ID_SLIDER_1 (GUI_ID_USER + 0x05)
-#define ID_SLIDER_2 (GUI_ID_USER + 0x06)
-#define ID_SPINBOX_0 (GUI_ID_USER + 0x07)
-#define ID_SPINBOX_1 (GUI_ID_USER + 0x08)
-#define ID_SPINBOX_2 (GUI_ID_USER + 0x09)
-#define ID_BUTTON_0 (GUI_ID_USER + 0x0A)
-#define ID_BUTTON_1 (GUI_ID_USER + 0x0B)
-#define ID_BUTTON_2 (GUI_ID_USER + 0x0C)
+#define ID_TEXT_3 (GUI_ID_USER + 0x04)
 
+#define ID_SLIDER_0 (GUI_ID_USER + 0x14)
+#define ID_SLIDER_1 (GUI_ID_USER + 0x15)
+#define ID_SLIDER_2 (GUI_ID_USER + 0x16)
+#define ID_SLIDER_3 (GUI_ID_USER + 0x17)
+
+#define ID_SPINBOX_0 (GUI_ID_USER + 0x21)
+#define ID_SPINBOX_1 (GUI_ID_USER + 0x22)
+#define ID_SPINBOX_2 (GUI_ID_USER + 0x23)
+#define ID_SPINBOX_3 (GUI_ID_USER + 0x24)
+
+#define ID_BUTTON_0 (GUI_ID_USER + 0x31)
+#define ID_BUTTON_1 (GUI_ID_USER + 0x32)
+#define ID_BUTTON_2 (GUI_ID_USER + 0x33)
+#define ID_BUTTON_3 (GUI_ID_USER + 0x34)
 // USER START (Optionally insert additional defines)
 // USER END
 
@@ -62,19 +68,26 @@
 *       _aDialogCreate
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 0, 480, 320, 0, 0x0, 0 },
+  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "temperature", ID_TEXT_0, 20, 20, 140, 30, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Single-click", ID_TEXT_1, 20, 90, 140, 30, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "double-click", ID_TEXT_2, 20, 160, 140, 30, 0, 0x0, 0 },
-  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 20, 52, 200, 25, 0, 0x0, 0 },
-  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_1, 20, 122, 200, 25, 0, 0x0, 0 },
-  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_2, 20, 192, 200, 25, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 80, 18, 90, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 80, 88, 90, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 80, 158, 90, 30, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Cancel", ID_BUTTON_0, 230, 100, 80, 40, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Confirm", ID_BUTTON_1, 230, 170, 80, 40, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "-->", ID_BUTTON_2, 230, 30, 80, 40, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "Single-click", ID_TEXT_1, 20, 87, 140, 30, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "double-click", ID_TEXT_2, 20, 154, 140, 30, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "longpress", ID_TEXT_3, 20, 221, 140, 30, 0, 0x0, 0 },	
+	
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 20, 52, 300, 25, 0, 0x0, 0 },
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_1, 20, 119, 300, 25, 0, 0x0, 0 },
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_2, 20, 186, 300, 25, 0, 0x0, 0 },
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_3, 20, 253, 300, 25, 0, 0x0, 0 },	
+	
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 150, 18, 90, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 150, 85, 90, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 150, 152, 90, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_3, 150, 219, 90, 30, 0, 0x0, 0 },	
+	
+  { BUTTON_CreateIndirect, "Upgrade", ID_BUTTON_0, 350, 20, 80, 40, 0, 0x0, 0 },	
+  { BUTTON_CreateIndirect, "Time", ID_BUTTON_1, 350, 90, 80, 40, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Cancel", ID_BUTTON_2, 350, 160, 80, 40, 0, 0x0, 0 },
+	{ BUTTON_CreateIndirect, "Confirm", ID_BUTTON_3, 350, 230, 80, 40, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -94,7 +107,7 @@ extern WM_HWIN CreateWindow(void);
 extern const char *HZStr[];
 static uint16_t slider_temp;
 uint8_t tem;
-uint16_t vol1,vol2;
+uint16_t vol1,vol2,vol3;
 uint8_t Lang_Flag = 1;
 // USER END
 
@@ -126,7 +139,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_2);
 			SLIDER_SetRange(hItem, 300, 999);
 			SLIDER_SetValue(hItem,vol2);		
-		
+
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_3);
+			SLIDER_SetRange(hItem, 300, 1500);
+			SLIDER_SetValue(hItem,vol3);			
 		
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_0);
 			SPINBOX_SetRange(hItem, 30, 95);
@@ -148,13 +164,26 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
 			SPINBOX_SetValue(hItem,vol2);
+			
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_3);
+			SPINBOX_SetRange(hItem, 300, 1500);	
+			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);	
+			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
+			SPINBOX_SetButtonSize(hItem,20);
+			SPINBOX_SetValue(hItem,vol3);
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
 			BUTTON_SetFont(hItem, GUI_FONT_20B_1);
 
+
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
+			BUTTON_SetFont(hItem,GUI_FONT_20_1);
+			
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1);
+			BUTTON_SetFont(hItem,GUI_FONT_20_1);			
 			for(i = 0;i < 2;i++)
 			{
-				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0+i);
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2+i);
 				
 				if (Lang_Flag)
 				{
@@ -166,13 +195,15 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					BUTTON_SetFont(hItem,GUI_FONT_20B_1);	
 				}
 			}
+			
 			for(i = 0;i < 3;i++)
 			{	
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0+i);
 				if (Lang_Flag)
 				{
 					TEXT_SetFont(hItem,&GUI_FontB24);
-					if(i == 0)TEXT_SetText(hItem,HZStr[1]);
+					if(i == 0)
+						TEXT_SetText(hItem,HZStr[1]);
 					else
 						TEXT_SetText(hItem,HZStr[2+i]);
 				}
@@ -181,7 +212,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					TEXT_SetFont(hItem,GUI_FONT_20B_1);
 				}
 			}
-		
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
+			TEXT_SetFont(hItem,GUI_FONT_20B_1);
 			break;
 		case WM_PAINT:
 			GUI_DrawGradientV(0,0,479,319,GUI_LIGHTBLUE,GUI_BLUE);
@@ -192,9 +224,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	
 		GUI_SetColor(GUI_YELLOW);
 		GUI_SetFont(GUI_FONT_24B_1);
-		GUI_DispStringAt("C",195,20);
-		GUI_DispStringAt("mL",190,90);
-		GUI_DispStringAt("mL",190,160);
+		GUI_DispStringAt("C",270,20);
+		GUI_DispStringAt("mL",270,87);
+		GUI_DispStringAt("mL",270,154);
+		GUI_DispStringAt("mL",270,221);		
 		
 		GUI_SetFont(GUI_FONT_8_1);
 		GUI_DispStringAt("o",190,25);
@@ -264,6 +297,28 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					slider_temp = SLIDER_GetValue(hItem);
 			
 					SPINBOX_SetValue(WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_2),slider_temp);
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
+    case ID_SLIDER_3: // Notifications sent by 'Slider'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_VALUE_CHANGED:
+        // USER START (Optionally insert code for reacting on notification message)
+					hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_3);
+					slider_temp = SLIDER_GetValue(hItem);
+			
+					SPINBOX_SetValue(WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_3),slider_temp);
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -348,7 +403,72 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       // USER END
       }
       break;
+		 case ID_SPINBOX_3: // Notifications sent by 'Spinbox'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_MOVED_OUT:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_VALUE_CHANGED:
+        // USER START (Optionally insert code for reacting on notification message)
+					hItem = WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_3);
+					slider_temp = SPINBOX_GetValue(hItem);
+			
+					SLIDER_SetValue(WM_GetDialogItem(pMsg->hWin, ID_SLIDER_3),slider_temp);
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
     case ID_BUTTON_0: // Notifications sent by 'Button'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+		  			HAL_FLASH_Unlock();
+			FLASH_WaitForLastOperation((uint32_t)5000);
+			if (HAL_OK!=HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,0x080E0000,0XB9F9D0C2))
+				printf("write error\r\n");
+			FLASH_WaitForLastOperation((uint32_t)5000);
+			HAL_FLASH_Lock();
+			
+				NVIC_SystemReset();
+		
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;			
+    case ID_BUTTON_1: // Notifications sent by 'Button'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+				WM_DeleteWindow(pMsg->hWin);
+				h_calender = CalenderWindow();
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
+    case ID_BUTTON_2: // Notifications sent by 'Button'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
@@ -359,13 +479,14 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
 				CreateWindow();
+
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
       // USER END
       }
       break;
-    case ID_BUTTON_1: // Notifications sent by 'Button'
+		case ID_BUTTON_3: // Notifications sent by 'Button'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
@@ -382,33 +503,6 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
 				CreateWindow();
-        // USER END
-        break;
-      // USER START (Optionally insert additional code for further notification handling)
-      // USER END
-      }
-      break;
-		case ID_BUTTON_2: // Notifications sent by 'Button'
-      switch(NCode) {
-      case WM_NOTIFICATION_CLICKED:
-        // USER START (Optionally insert code for reacting on notification message)
-        // USER END
-        break;
-      case WM_NOTIFICATION_RELEASED:
-        // USER START (Optionally insert code for reacting on notification message)
-			#if 1
-			WM_DeleteWindow(pMsg->hWin);
-			h_calender = CalenderWindow();
-			#else
-			HAL_FLASH_Unlock();
-			FLASH_WaitForLastOperation((uint32_t)5000);
-			if (HAL_OK!=HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,0x080E0000,0XB9F9D0C2))
-				printf("write error\r\n");
-			FLASH_WaitForLastOperation((uint32_t)5000);
-			HAL_FLASH_Lock();
-			
-				NVIC_SystemReset();
-			#endif
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)

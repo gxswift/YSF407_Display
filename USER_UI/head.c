@@ -22,7 +22,8 @@
 // USER END
 
 #include "DIALOG.h"
-
+#include "stm32f4xx_hal.h"
+#include "rtc.h"
 /*********************************************************************
 *
 *       Defines
@@ -30,10 +31,9 @@
 **********************************************************************
 */
 #define ID_WINDOW_0 (GUI_ID_USER + 0x00)
-#define ID_BUTTON_0 (GUI_ID_USER + 0x01)
+
 
 // USER START (Optionally insert additional defines)
-extern WM_HWIN Display_set(void);
 // USER END
 
 /*********************************************************************
@@ -51,9 +51,8 @@ extern WM_HWIN Display_set(void);
 *       _aDialogCreate
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
+  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 0, 480, 30, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
-	  { BUTTON_CreateIndirect, "Return", ID_BUTTON_0, 200, 200, 80, 40, 0, 0x0, 0 },
   // USER END
 };
 
@@ -65,68 +64,60 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 
 // USER START (Optionally insert additional static code)
-extern WM_HWIN H_Hand;
-#define VH 0
-#define VL 0
-char str[30];
 // USER END
 
 /*********************************************************************
 *
 *       _cbDialog
 */
+char str_time[15];
+
+	RTC_TimeTypeDef RTC_Time;
+	RTC_DateTypeDef RTC_Date;
+int show_Flag = 1;
+
 static void _cbDialog(WM_MESSAGE * pMsg) {
-  WM_HWIN hItem;
+
+	GUI_RECT Rect;
+
   // USER START (Optionally insert additional variables)
-  int NCode;
-  int Id;
-	int ver_h,ver_l;
   // USER END
 
   switch (pMsg->MsgId) {
-	case WM_PAINT:
-		GUI_DrawGradientV(0,0,479,319,GUI_LIGHTBLUE,GUI_BLUE);
-		GUI_SetTextMode(GUI_TM_TRANS);
-		GUI_SetFont(GUI_FONT_16B_1);
-		ver_h = VH;ver_l = VL;
-	sprintf(str,"version:\r\n%d.%d",ver_h,ver_l);
-		GUI_DispStringHCenterAt(str,240,50);
-	sprintf(str,"Compile time:\r\n%s--%s",__DATE__,__TIME__);
-		GUI_DispStringHCenterAt(str,240,120);
-		break;
-  case WM_INIT_DIALOG:
-    //
-    // Initialization of 'SoftWare'
-    //
-				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
-			BUTTON_SetFont(hItem,GUI_FONT_16B_1);	
-	
-    // USER START (Optionally insert additional code for further widget initialization)
-    // USER END
-    break;
   // USER START (Optionally insert additional message handling)
-	  case WM_NOTIFY_PARENT:
-    Id    = WM_GetId(pMsg->hWinSrc);
-    NCode = pMsg->Data.v;
-    switch(Id) {
-		case ID_BUTTON_0: // Notifications sent by 'Button'
-      switch(NCode) {
-      case WM_NOTIFICATION_CLICKED:
-        // USER START (Optionally insert code for reacting on notification message)
-        // USER END
-        break;
-      case WM_NOTIFICATION_RELEASED:
-        // USER START (Optionally insert code for reacting on notification message)
-				hItem = pMsg->hWin;
-				WM_DeleteWindow(hItem);
-			H_Hand = Display_set();
-        // USER END
-        break;
-      // USER START (Optionally insert additional code for further notification handling)
-      // USER END
-      }
-      break;
+		case WM_TIMER:
+
+			HAL_RTC_GetTime(&hrtc,&RTC_Time,RTC_FORMAT_BIN);			
+			HAL_RTC_GetDate(&hrtc,&RTC_Date,RTC_FORMAT_BIN);
+	
+			WM_RestartTimer(pMsg->Data.v,1000);
+			
+			Rect.x0 = 400;
+			Rect.x1 = 480;
+			Rect.y0 = 0;
+			Rect.y1 = 30;
+
+			WM_InvalidateArea(&Rect);
+		//WM_InvalidateWindow(pMsg->hWin);
+			break;
+		case WM_PAINT:
+			GUI_DrawGradientV(0,0,479,15,GUI_LIGHTBLUE,0x00FF3030);
+			GUI_DrawGradientV(0,15,479,30,0x00FF3030,GUI_LIGHTBLUE);
+	
+			GUI_SetTextMode(GUI_TM_TRANS);
+			GUI_SetFont(GUI_FONT_20B_1);
+			GUI_SetColor(GUI_BLACK);
+			GUI_DispStringHCenterAt("Bubble Lab",240,5);
+		
+			GUI_SetFont(GUI_FONT_13B_1);
+		if (show_Flag)
+		{
+			sprintf(str_time,"%2d:%2d:%2d",RTC_Time.Hours,RTC_Time.Minutes,RTC_Time.Seconds);
+			GUI_DispStringHCenterAt(str_time,440,2);	
+			sprintf(str_time,"20%02d/%d/%d",RTC_Date.Year,RTC_Date.Month,RTC_Date.Date);
+			GUI_DispStringHCenterAt(str_time,440,17);
 		}
+
 		break;
   // USER END
   default:
@@ -143,13 +134,14 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 */
 /*********************************************************************
 *
-*       CreateSoftWare
+*       CreateWindow
 */
-WM_HWIN CreateSoftWare(void);
-WM_HWIN CreateSoftWare(void) {
+WM_HWIN HeadWindow(void);
+WM_HWIN HeadWindow(void) {
   WM_HWIN hWin;
-
+	WM_HTIMER h_timer;
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
+	h_timer = WM_CreateTimer(hWin,0,1000,0);
   return hWin;
 }
 

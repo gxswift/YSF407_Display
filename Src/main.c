@@ -19,7 +19,7 @@
 #include "usart/bsp_debug_usart.h"
 #include "lcd/bsp_lcd.h"
 #include "stdlib.h"
-
+#include "rtc.h"
 #include "touch/bsp_touch.h"
 #include "led/bsp_led.h"
 
@@ -42,39 +42,57 @@ void SystemClock_Config(void)
 
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
- 
-  __HAL_RCC_PWR_CLK_ENABLE();                                     //使能PWR时钟
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
 
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);  //设置调压器输出电压级别1
+    /**Configure the main internal regulator output voltage 
+    */
+  __HAL_RCC_PWR_CLK_ENABLE();
 
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;      // 外部晶振，8MHz
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;                        //打开HSE 
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;                    //打开PLL
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;            //PLL时钟源选择HSE
-  RCC_OscInitStruct.PLL.PLLM = 8;                                 //8分频MHz
-  RCC_OscInitStruct.PLL.PLLN = 336;                               //336倍频
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;                     //2分频，得到168MHz主时钟
-  RCC_OscInitStruct.PLL.PLLQ = 7;                                 //USB/SDIO/随机数产生器等的主PLL分频系数
-  HAL_RCC_OscConfig(&RCC_OscInitStruct);
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
+    /**Initializes the CPU, AHB and APB busses clocks 
+    */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 8;
+  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+  }
+
+    /**Initializes the CPU, AHB and APB busses clocks 
+    */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;       // 系统时钟：168MHz
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;              // AHB时钟： 168MHz
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;               // APB1时钟：42MHz
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;               // APB2时钟：84MHz
-  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  HAL_RCC_EnableCSS();                                            // 使能CSS功能，优先使用外部晶振，内部时钟源为备用
-  
- 	// HAL_RCC_GetHCLKFreq()/1000    1ms中断一次
-	// HAL_RCC_GetHCLKFreq()/100000	 10us中断一次
-	// HAL_RCC_GetHCLKFreq()/1000000 1us中断一次
-  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);                // 配置并启动系统滴答定时器
-  /* 系统滴答定时器时钟源 */
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+  {
+  }
+
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+  PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+  {
+  }
+
+    /**Configure the Systick interrupt time 
+    */
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+
+    /**Configure the Systick 
+    */
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
-  /* 系统滴答定时器中断优先级配置 */
+  /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
@@ -87,8 +105,8 @@ void SystemClock_Config(void)
 
 //
 extern void Skin();
-extern void CreateWindow();
-
+extern WM_HWIN CreateWindow();
+extern WM_HWIN HeadWindow(void);
 
 static void vTaskGUI(void *pvParameters)
 {
@@ -96,6 +114,8 @@ static void vTaskGUI(void *pvParameters)
 	GUI_Init();
 	Skin();
 	CreateWindow();
+	HeadWindow();
+
 	while (1)
 	{
 		GUI_Exec();
@@ -113,6 +133,8 @@ static void vTaskTouch(void *pvParameters)
 
 static void vTaskLed1(void *pvParameters)
 {
+	vTaskDelay(100);
+		MX_RTC_Init();
 	while(1)
 	{
 		HAL_GPIO_TogglePin(LED1_GPIO,LED1_GPIO_PIN);
@@ -122,10 +144,25 @@ static void vTaskLed1(void *pvParameters)
 
 static void vTaskLed2(void *pvParameters)
 {
+	uint16_t cnt = 0;
 	while(1)
 	{
+		if (GUI_PID_IsPressed())
+		{
+			cnt = 0;
+			LCD_BK_ON();
+		}
+		else
+		{
+			if (cnt < 300)
+				cnt++;
+			else
+			{
+				LCD_BK_OFF();
+			}
+		}
 		HAL_GPIO_TogglePin(LED2_GPIO,LED2_GPIO_PIN);
-		vTaskDelay(500);
+		vTaskDelay(100);
 	}
 }
 static void vTaskLed3(void *pvParameters)
@@ -153,6 +190,11 @@ void HAL_Delay(__IO uint32_t Delay)
 	vTaskDelay(Delay);
 }
 
+//uint32_t HAL_GetTick()
+//{
+//	return xTaskGetTickCount();
+//}
+
 int main(void)
 {
   /* 复位所有外设，初始化Flash接口和系统滴答定时器 */
@@ -165,11 +207,10 @@ int main(void)
   __HAL_RCC_CRC_CLK_ENABLE();
   MX_DEBUG_USART_Init();
   LED_GPIO_Init();
+	
   /* 电阻触摸相关GPIO初始化 */
   Touch_Init_GPIO();
-  printf("硬石STM32F407开发板移植STemWin测试\n"); 
   lcd_id=BSP_LCD_Init();  
-  printf("LCD ID= 0x%x\n",lcd_id);
   /* 初始化GUI */
 //  GUI_Init();	
 	LCD_BK_ON();

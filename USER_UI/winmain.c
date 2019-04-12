@@ -63,19 +63,20 @@
 *       _aDialogCreate
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 0, 480, 320, 0, 0x0, 0 },
+  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
 
-  { BUTTON_CreateIndirect, "Status", ID_BUTTON_0, 50, 190, 80, 40, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Setting", ID_BUTTON_1, 200, 190, 80, 40, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Status", ID_BUTTON_0, 350, 40, 80, 80, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Setting", ID_BUTTON_1, 350, 180, 80, 80, 0, 0x0, 0 },
 	{ TEXT_CreateIndirect, "85", ID_TEXT_0, 200, 30, 90, 50, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "0", ID_TEXT_1, 200, 70, 90, 50, 0, 0x0, 0 },
-	{ TEXT_CreateIndirect, "15000", ID_TEXT_2, 200, 110, 90, 50, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "0", ID_TEXT_1, 200, 90, 90, 50, 0, 0x0, 0 },
+	{ TEXT_CreateIndirect, "heat", ID_TEXT_2, 200, 150, 90, 50, 0, 0x0, 0 },
 
-	{ PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 20, 25, 80, 150, 1, 0x0, 0 },
+	{ PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 20, 25, 80, 230, 1, 0x0, 0 },
 	{ TEXT_CreateIndirect, "--o", ID_TEXT_3, 100, 150, 35, 20, 0, 0x0, 0 },
 	{ TEXT_CreateIndirect, "--o", ID_TEXT_4, 100, 50, 35, 20, 0, 0x0, 0 },
 	{ TEXT_CreateIndirect, "--o", ID_TEXT_5, 100, 30, 35, 20, 0, 0x0, 0 },
-	{ TEXT_CreateIndirect, "15000", ID_TEXT_6, 200, 150, 90, 50, 0, 0x0, 0 },
+	
+	{ TEXT_CreateIndirect, "15000", ID_TEXT_6, 200, 210, 90, 50, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -98,12 +99,37 @@ extern const char *HZStr[];
 extern uint8_t Lang_Flag;
 
 WM_HWIN H_Hand;
+
+
+extern GUI_CONST_STORAGE GUI_BITMAP bmicohand;
+extern GUI_CONST_STORAGE GUI_BITMAP bmtimg;
 // USER END
 
 /*********************************************************************
 *
 *       _cbDialog
 */
+
+// USER START (Optionally insert additional public code)
+void Skin()
+{
+	BUTTON_SKINFLEX_PROPS Props;
+	BUTTON_GetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_ENABLED);
+	Props.Radius = 3;
+	//Props.aColorFrame[0] = ;
+	Props.aColorUpper[0] = GUI_WHITE;
+	Props.aColorLower[0] = 0x00DD4040;
+	Props.aColorUpper[1] = 0x00DD4040;
+	Props.aColorLower[1] = GUI_WHITE;
+	BUTTON_SetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_ENABLED);
+	BUTTON_SetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_FOCUSSED);
+	Props.aColorLower[0] = GUI_LIGHTBLUE;
+	Props.aColorUpper[1] = GUI_LIGHTBLUE;
+	BUTTON_SetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_PRESSED);
+}
+
+
+
 static void _cbDialog(WM_MESSAGE * pMsg) {
 	WM_HWIN hItem;
   int NCode;
@@ -114,6 +140,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 
   switch (pMsg->MsgId) {
 	case WM_INIT_DIALOG:	
+
 			for(i = 0;i < 3;i++)
 			{	
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0+i);
@@ -129,11 +156,15 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
 			BUTTON_SetFont(hItem,&GUI_FontB24);	
 			//BUTTON_SetText(hItem,"\xE8\xAE\xBE\xE7\xBD\xAE");
-			BUTTON_SetText(hItem,HZStr[12]);
+	//		BUTTON_SetText(hItem,HZStr[12]);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmicohand);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmicohand);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1);
 			BUTTON_SetFont(hItem,&GUI_FontB24);	
-			BUTTON_SetText(hItem,HZStr[0]);
+	//		BUTTON_SetText(hItem,HZStr[0]);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmtimg);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmtimg);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
 			TEXT_SetTextColor(hItem,GUI_RED);
@@ -162,6 +193,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			PROGBAR_SetValue(hItem, 50);
 			PROGBAR_SetValue(hItem, 85);
 			PROGBAR_SetValue(hItem, 95);
+			PROGBAR_SetBarColor(hItem, 0, GUI_GREEN);
+			PROGBAR_SetBarColor(hItem, 1, GUI_LIGHTYELLOW);
 		break;
 	
 	case WM_PAINT:
@@ -177,9 +210,9 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		{
 			GUI_SetFont(&GUI_FontB24);
 			GUI_DispStringAt(HZStr[1],140,30);
-			GUI_DispStringAt(HZStr[13],140,70);	
-			GUI_DispStringAt(HZStr[7],140,110);	
-			GUI_DispStringAt(HZStr[16], 140, 150);
+			GUI_DispStringAt(HZStr[13],140,90);	
+			GUI_DispStringAt(HZStr[7],140,150);	
+			GUI_DispStringAt(HZStr[16], 140, 210);
 		}
 		else
 		{
@@ -191,7 +224,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	
 		GUI_SetFont(GUI_FONT_24B_1);
 		GUI_DispStringAt("C",255,30);
-		GUI_DispStringAt("mL",270,150);
+		GUI_DispStringAt("mL",270,210);
 	
 		GUI_SetFont(GUI_FONT_8_1);
 		GUI_DispStringAt("o",250,30);
@@ -221,6 +254,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         // USER START (Optionally insert code for reacting on notification message)
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
+						Skin();
 			H_Hand = 	Display_set();
         // USER END
         break;
@@ -238,7 +272,9 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         // USER START (Optionally insert code for reacting on notification message)
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
+						Skin();
 				SettingWindow();
+
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -270,41 +306,13 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 WM_HWIN CreateWindow(void);
 WM_HWIN CreateWindow(void) {
   WM_HWIN hWin;
-
+		
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
+
 	GUI_UC_SetEncodeUTF8();
   return hWin;
 }
 
-// USER START (Optionally insert additional public code)
-void Skin()
-{
-	BUTTON_SKINFLEX_PROPS Props;
-	BUTTON_GetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_ENABLED);
-	Props.Radius = 3;
-	//Props.aColorFrame[0] = ;
-	Props.aColorUpper[0] = GUI_WHITE;
-	Props.aColorLower[0] = 0x00DD4040;
-	Props.aColorUpper[1] = 0x00DD4040;
-	Props.aColorLower[1] = GUI_WHITE;
-	BUTTON_SetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_ENABLED);
-	BUTTON_SetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_FOCUSSED);
-	Props.aColorLower[0] = GUI_LIGHTBLUE;
-	Props.aColorUpper[1] = GUI_LIGHTBLUE;
-	BUTTON_SetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_PRESSED);
-}
-/*
-void MainTask(void) {
-	WM_SetCreateFlags(WM_CF_MEMDEV);	
-	GUI_Init();
-	Skin();
-	CreateWindow();
-	while (1)
-	{
-		GUI_Exec();
-	}
-}
-*/
-// USER END
+
 
 /*************************** End of file ****************************/

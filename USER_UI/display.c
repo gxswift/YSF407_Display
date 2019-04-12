@@ -57,14 +57,17 @@
 *       _aDialogCreate
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 0, 480, 320, 0, 0x0, 0 },
+  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
  /* { RADIO_CreateIndirect, "Radio", ID_RADIO_0, 111, 15, 100, 45, 0, 0x1402, 0 },*/
-  { PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 30, 100, 250, 17, 0, 0x0, 0 },
-	 { BUTTON_CreateIndirect, "Status", ID_BUTTON_0, 50, 190, 80, 40, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Setting", ID_BUTTON_1, 200, 190, 80, 40, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Start", ID_BUTTON_2, 120, 135, 80, 40, 0, 0x0, 0 },
- { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 30, 50, 250, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 140, 18, 90, 30, 0, 0x0, 0 },
+  { PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 30, 130, 300, 20, 0, 0x0, 0 },
+	
+	 { BUTTON_CreateIndirect, "Status", ID_BUTTON_0, 350, 90, 80, 40, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Setting", ID_BUTTON_1, 350, 230, 80, 40, 0, 0x0, 0 },
+	
+  { BUTTON_CreateIndirect, "Start", ID_BUTTON_2, 120, 200, 80, 40, 0, 0x0, 0 },
+ { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 30, 80, 300, 40, 0, 0x0, 0 },
+ 
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 150, 15, 90, 35, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -166,7 +169,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		GUI_DispString(HZStr[2]);
 	
 		GUI_SetFont(GUI_FONT_24B_1);
-		GUI_DispStringAt("mL",260,20);
+		GUI_DispStringAt("mL",280,20);
 		break;
 	
   case WM_NOTIFY_PARENT:

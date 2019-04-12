@@ -409,6 +409,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\stm32f4xx_assert.c</FilePath>
             </File>
+            <File>
+              <FileName>rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rtc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1246,6 +1251,21 @@
               <FileName>calender.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER_UI\calender.c</FilePath>
+            </File>
+            <File>
+              <FileName>head.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_UI\head.c</FilePath>
+            </File>
+            <File>
+              <FileName>icohand.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_UI\icohand.c</FilePath>
+            </File>
+            <File>
+              <FileName>icoset.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_UI\icoset.c</FilePath>
             </File>
           </Files>
         </Group>

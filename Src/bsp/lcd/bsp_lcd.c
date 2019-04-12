@@ -388,7 +388,7 @@ uint32_t BSP_LCD_Init(void)
 {
   MX_FSMC_Init();
   lcd_id=LCD_ReadID();
-  printf("LCD_ReadID=%x\n",lcd_id);
+//  printf("LCD_ReadID=%x\n",lcd_id);
   if(lcd_id==0x548066)
   {
     ILI9488_REG_Config();
