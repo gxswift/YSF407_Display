@@ -1258,14 +1258,29 @@
               <FilePath>..\USER_UI\head.c</FilePath>
             </File>
             <File>
-              <FileName>icohand.c</FileName>
+              <FileName>select.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER_UI\icohand.c</FilePath>
+              <FilePath>..\USER_UI\select.c</FilePath>
             </File>
             <File>
-              <FileName>icoset.c</FileName>
+              <FileName>icostart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\USER_UI\icoset.c</FilePath>
+              <FilePath>..\USER_UI\icostart.c</FilePath>
+            </File>
+            <File>
+              <FileName>icostop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_UI\icostop.c</FilePath>
+            </File>
+            <File>
+              <FileName>icooperate.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_UI\icooperate.c</FilePath>
+            </File>
+            <File>
+              <FileName>icobasicset.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_UI\icobasicset.c</FilePath>
             </File>
           </Files>
         </Group>

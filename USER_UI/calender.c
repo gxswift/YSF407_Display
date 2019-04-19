@@ -63,7 +63,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 170, 240, 55, 40, 0, 0x0, 0 },
   { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 240, 240, 55, 40, 0, 0x0, 0 },
 	
-  { CHECKBOX_CreateIndirect, "check", ID_CHECKBOX_0, 330, 40, 100, 20, 0, 0x0, 0 },
+  { CHECKBOX_CreateIndirect, "check", ID_CHECKBOX_0, 340, 40, 100, 20, 0, 0x0, 0 },
 	
 //	{ BUTTON_CreateIndirect, "Upgrade", ID_BUTTON_0, 350, 70, 80, 40, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "EXIT", ID_BUTTON_1, 350, 160, 80, 40, 0, 0x0, 0 },
@@ -84,6 +84,9 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 // USER END
 extern WM_HWIN CreateWin1(void);
 extern WM_HWIN SettingWindow(void);
+extern WM_HWIN SelectWindow(void);
+
+
 CALENDAR_DATE Date;
 
 	int Hour;
@@ -230,7 +233,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         // USER START (Optionally insert code for reacting on notification message)
 			
 		  WM_DeleteWindow(pMsg->hWin);
-		  SettingWindow();
+		  SelectWindow();
 		
         // USER END
         break;

@@ -89,9 +89,9 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 
 // USER START (Optionally insert additional static code)
-extern WM_HWIN SettingWindow(void);
-extern WM_HWIN Display_set(void);
 
+extern WM_HWIN Display_set(void);
+extern WM_HWIN SelectWindow(void);
 
 extern GUI_CONST_STORAGE GUI_FONT GUI_FontB24;
 
@@ -101,8 +101,8 @@ extern uint8_t Lang_Flag;
 WM_HWIN H_Hand;
 
 
-extern GUI_CONST_STORAGE GUI_BITMAP bmicohand;
-extern GUI_CONST_STORAGE GUI_BITMAP bmtimg;
+extern GUI_CONST_STORAGE GUI_BITMAP bmoperate;
+extern GUI_CONST_STORAGE GUI_BITMAP bmbasicset;
 // USER END
 
 /*********************************************************************
@@ -127,7 +127,6 @@ void Skin()
 	Props.aColorUpper[1] = GUI_LIGHTBLUE;
 	BUTTON_SetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_PRESSED);
 }
-
 
 
 static void _cbDialog(WM_MESSAGE * pMsg) {
@@ -157,14 +156,14 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			BUTTON_SetFont(hItem,&GUI_FontB24);	
 			//BUTTON_SetText(hItem,"\xE8\xAE\xBE\xE7\xBD\xAE");
 	//		BUTTON_SetText(hItem,HZStr[12]);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmicohand);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmicohand);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmoperate);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmoperate);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1);
 			BUTTON_SetFont(hItem,&GUI_FontB24);	
 	//		BUTTON_SetText(hItem,HZStr[0]);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmtimg);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmtimg);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmbasicset);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmbasicset);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
 			TEXT_SetTextColor(hItem,GUI_RED);
@@ -273,7 +272,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
 						Skin();
-				SettingWindow();
+			SelectWindow();
+				//SettingWindow();
 
         // USER END
         break;

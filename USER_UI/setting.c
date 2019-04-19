@@ -69,23 +69,24 @@
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "temperature", ID_TEXT_0, 20, 20, 140, 30, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Single-click", ID_TEXT_1, 20, 87, 140, 30, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "double-click", ID_TEXT_2, 20, 154, 140, 30, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "longpress", ID_TEXT_3, 20, 221, 140, 30, 0, 0x0, 0 },	
 	
-  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 20, 52, 300, 25, 0, 0x0, 0 },
-  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_1, 20, 119, 300, 25, 0, 0x0, 0 },
-  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_2, 20, 186, 300, 25, 0, 0x0, 0 },
-  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_3, 20, 253, 300, 25, 0, 0x0, 0 },	
+  { TEXT_CreateIndirect, "temperature", ID_TEXT_0, 20, 15, 140, 30, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "Single-click", ID_TEXT_1, 20, 82, 140, 30, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "double-click", ID_TEXT_2, 20, 149, 140, 30, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "longpress", ID_TEXT_3, 20, 216, 140, 30, 0, 0x0, 0 },	
 	
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 150, 18, 90, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 150, 85, 90, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 150, 152, 90, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_3, 150, 219, 90, 30, 0, 0x0, 0 },	
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 20, 47, 300, 25, 0, 0x0, 0 },
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_1, 20, 114, 300, 25, 0, 0x0, 0 },
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_2, 20, 181, 300, 25, 0, 0x0, 0 },
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_3, 20, 248, 300, 25, 0, 0x0, 0 },	
 	
-  { BUTTON_CreateIndirect, "Upgrade", ID_BUTTON_0, 350, 20, 80, 40, 0, 0x0, 0 },	
-  { BUTTON_CreateIndirect, "Time", ID_BUTTON_1, 350, 90, 80, 40, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 150, 13, 90, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 150, 80, 90, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 150, 147, 90, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_3, 150, 214, 90, 30, 0, 0x0, 0 },	
+	
+//  { BUTTON_CreateIndirect, "Upgrade", ID_BUTTON_0, 350, 20, 80, 40, 0, 0x0, 0 },	
+//  { BUTTON_CreateIndirect, "Time", ID_BUTTON_1, 350, 90, 80, 40, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "Cancel", ID_BUTTON_2, 350, 160, 80, 40, 0, 0x0, 0 },
 	{ BUTTON_CreateIndirect, "Confirm", ID_BUTTON_3, 350, 230, 80, 40, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
@@ -102,7 +103,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 // USER START (Optionally insert additional static code)
 extern GUI_CONST_STORAGE GUI_FONT GUI_FontB24;
 extern WM_HWIN CalenderWindow(void);
-
+extern WM_HWIN SelectWindow(void);
+extern WM_HWIN CreateSoftWare(void);
 extern WM_HWIN CreateWindow(void);
 extern const char *HZStr[];
 static uint16_t slider_temp;
@@ -224,10 +226,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	
 		GUI_SetColor(GUI_YELLOW);
 		GUI_SetFont(GUI_FONT_24B_1);
-		GUI_DispStringAt("C",270,20);
-		GUI_DispStringAt("mL",270,87);
-		GUI_DispStringAt("mL",270,154);
-		GUI_DispStringAt("mL",270,221);		
+		GUI_DispStringAt("C",270,15);
+		GUI_DispStringAt("mL",270,82);
+		GUI_DispStringAt("mL",270,149);
+		GUI_DispStringAt("mL",270,216);		
 		
 		GUI_SetFont(GUI_FONT_8_1);
 		GUI_DispStringAt("o",190,25);
@@ -437,14 +439,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-		  			HAL_FLASH_Unlock();
-			FLASH_WaitForLastOperation((uint32_t)5000);
-			if (HAL_OK!=HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,0x080E0000,0XB9F9D0C2))
-				printf("write error\r\n");
-			FLASH_WaitForLastOperation((uint32_t)5000);
-			HAL_FLASH_Lock();
 			
-				NVIC_SystemReset();
+							hItem = pMsg->hWin;
+				WM_DeleteWindow(hItem);
+				CreateSoftWare();
+			
+
 		
         // USER END
         break;
@@ -478,7 +478,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         // USER START (Optionally insert code for reacting on notification message)
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
-				CreateWindow();
+				SelectWindow();
 
         // USER END
         break;
@@ -502,7 +502,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
-				CreateWindow();
+				SelectWindow();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)

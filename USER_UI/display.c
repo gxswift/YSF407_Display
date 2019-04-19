@@ -59,15 +59,15 @@
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
  /* { RADIO_CreateIndirect, "Radio", ID_RADIO_0, 111, 15, 100, 45, 0, 0x1402, 0 },*/
-  { PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 30, 130, 300, 20, 0, 0x0, 0 },
+  { PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 40, 130, 400, 20, 0, 0x0, 0 },
 	
-	 { BUTTON_CreateIndirect, "Status", ID_BUTTON_0, 350, 90, 80, 40, 0, 0x0, 0 },
+//	 { BUTTON_CreateIndirect, "Status", ID_BUTTON_0, 350, 90, 80, 40, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "Setting", ID_BUTTON_1, 350, 230, 80, 40, 0, 0x0, 0 },
 	
-  { BUTTON_CreateIndirect, "Start", ID_BUTTON_2, 120, 200, 80, 40, 0, 0x0, 0 },
- { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 30, 80, 300, 40, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Start", ID_BUTTON_2, 190, 170, 100, 100, 0, 0x0, 0 },
+ { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 40, 60, 400, 40, 0, 0x0, 0 },
  
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 150, 15, 90, 35, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 200, 15, 90, 35, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -86,6 +86,10 @@ extern const char *HZStr[];
 
 extern WM_HWIN CreateWindow(void);
 extern WM_HWIN CreateSoftWare(void);
+
+extern GUI_CONST_STORAGE GUI_BITMAP bmstart;
+extern GUI_CONST_STORAGE GUI_BITMAP bmstop;
+
 static uint16_t slider_temp;
 uint16_t hand_vol;
 uint16_t out_vol;
@@ -141,6 +145,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_GREEN);
 					BUTTON_SetFont(hItem,&GUI_FontB24);	
 					BUTTON_SetText(hItem,HZStr[8]);
+													BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
 				}
 				else
 				{
@@ -165,11 +171,11 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	
 		GUI_SetColor(GUI_YELLOW);
 		GUI_SetFont(&GUI_FontB24);
-		GUI_DispStringAt(HZStr[0],30,20);
+		GUI_DispStringAt(HZStr[0],50,20);
 		GUI_DispString(HZStr[2]);
 	
 		GUI_SetFont(GUI_FONT_24B_1);
-		GUI_DispStringAt("mL",280,20);
+		GUI_DispStringAt("mL",380,20);
 		break;
 	
   case WM_NOTIFY_PARENT:
@@ -303,6 +309,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_GREEN);
 					BUTTON_SetFont(hItem,&GUI_FontB24);	
 					BUTTON_SetText(hItem,HZStr[8]);
+								BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
 				}
 				else
 				{
@@ -311,6 +319,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					BUTTON_SetFont(hItem,&GUI_FontB24);	
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_RED);
 					BUTTON_SetText(hItem,HZStr[9]);
+								BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstop);
+			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstop);
 				}
         // USER END
         break;

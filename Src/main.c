@@ -154,7 +154,7 @@ static void vTaskLed2(void *pvParameters)
 		}
 		else
 		{
-			if (cnt < 300)
+			if (cnt < 600)
 				cnt++;
 			else
 			{
