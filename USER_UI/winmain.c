@@ -23,6 +23,8 @@
 
 #include "DIALOG.h"
 #include "stdint.h"
+#include "str.h"
+
 /*********************************************************************
 *
 *       Defines
@@ -150,8 +152,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0+i);
 				BUTTON_SetFont(hItem,GUI_FONT_20B_1);	
 			}
-			
-			
+				
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
 			BUTTON_SetFont(hItem,&GUI_FontB24);	
 			//BUTTON_SetText(hItem,"\xE8\xAE\xBE\xE7\xBD\xAE");
@@ -164,6 +165,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	//		BUTTON_SetText(hItem,HZStr[0]);
 			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmbasicset);
 			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmbasicset);
+		
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
 			TEXT_SetTextColor(hItem,GUI_RED);
@@ -204,7 +206,21 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		GUI_DispStringHCenterAt("dotcom",160,65);
 	
 		GUI_SetColor(GUI_YELLOW);	
+/*
+		TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+		TEXT_SetText(hItem,String[i+1][Set.language]);
+	*/
+	GUI_SetFont(Set.language?&GUI_FontB24:&GUI_Font20_1);
+	//GUI_DispStringAt(String[Find_Str("Temperature")][Set.language],140,30);
 
+	if (Set.language == 0)//Ì«³¤
+		GUI_DispStringAt("Temp",140,30);
+	else
+		GUI_DispStringAt(String[Find_Str("Temperature")][Set.language],140,30);		
+	GUI_DispStringAt(String[Find_Str("Heat")][Set.language],140,90);
+	GUI_DispStringAt(String[Find_Str("Status")][Set.language],140,150);
+	GUI_DispStringAt(String[Find_Str("Flow")][Set.language],140,210);
+	/*
 		if (Lang_Flag)
 		{
 			GUI_SetFont(&GUI_FontB24);
@@ -220,7 +236,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			GUI_DispStringAt("Volume",40,100);	
 			GUI_DispStringAt("Status",40,160);	
 		}
-	
+	*/
 		GUI_SetFont(GUI_FONT_24B_1);
 		GUI_DispStringAt("C",255,30);
 		GUI_DispStringAt("mL",270,210);

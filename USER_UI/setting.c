@@ -24,6 +24,7 @@
 #include "DIALOG.h"
 #include "stdint.h"
 #include "stm32f4xx_hal.h"
+#include "str.h"
 /*********************************************************************
 *
 *       Defines
@@ -50,6 +51,8 @@
 #define ID_BUTTON_1 (GUI_ID_USER + 0x32)
 #define ID_BUTTON_2 (GUI_ID_USER + 0x33)
 #define ID_BUTTON_3 (GUI_ID_USER + 0x34)
+
+#define ID_RADIO_0 (GUI_ID_USER + 0x41)
 // USER START (Optionally insert additional defines)
 // USER END
 
@@ -89,6 +92,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 //  { BUTTON_CreateIndirect, "Time", ID_BUTTON_1, 350, 90, 80, 40, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "Cancel", ID_BUTTON_2, 350, 160, 80, 40, 0, 0x0, 0 },
 	{ BUTTON_CreateIndirect, "Confirm", ID_BUTTON_3, 350, 230, 80, 40, 0, 0x0, 0 },
+	
+	{ RADIO_CreateIndirect, "Radio", ID_RADIO_0, 350, 40, 100, 100, 0, 0x3002, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -111,6 +116,13 @@ static uint16_t slider_temp;
 uint8_t tem;
 uint16_t vol1,vol2,vol3;
 uint8_t Lang_Flag = 1;
+
+
+
+/*
+SetFont(hItem,Get_Font(Set.language));
+SetText(hItem,String[Find_Str("")][Set.language]);
+*/
 // USER END
 
 /*********************************************************************
@@ -169,20 +181,24 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_3);
 			SPINBOX_SetRange(hItem, 300, 1500);	
-			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);	
+			SPINBOX_SetFont(hItem,GUI_FONT_20_1);	
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
 			SPINBOX_SetValue(hItem,vol3);
-
+/*
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
 			BUTTON_SetFont(hItem, GUI_FONT_20B_1);
 
-
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
 			BUTTON_SetFont(hItem,GUI_FONT_20_1);
-			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1);
 			BUTTON_SetFont(hItem,GUI_FONT_20_1);			
+*/
+/*
+SetFont(hItem,Get_Font(Set.language));
+SetText(hItem,String[Find_Str("")][Set.language]);
+*/
+	/*		
 			for(i = 0;i < 2;i++)
 			{
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2+i);
@@ -216,6 +232,36 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			}
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
 			TEXT_SetFont(hItem,GUI_FONT_20B_1);
+		*/	
+		
+			for(i = 0;i < 2;i++)
+			{
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2+i);
+				
+				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				BUTTON_SetText(hItem,String[Find_Str("Cancel")+i][Set.language]);
+			}
+			
+			for(i = 0;i < 4;i++)
+			{
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0+i);
+				
+				TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				//TEXT_SetText(hItem,String[Find_Str("")][Set.language]);
+				TEXT_SetText(hItem,String[i+1][Set.language]);
+			}
+			
+			
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_RADIO_0);
+/*			
+			RADIO_SetFont(hItem,GUI_FONT_20_1);
+			RADIO_SetText(hItem,"English",0);
+			RADIO_SetText(hItem,"Chinese",1);*/
+			
+			RADIO_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+			RADIO_SetText(hItem,String[Find_Str("English")][Set.language],0);
+			RADIO_SetText(hItem,String[Find_Str("Chinese")][Set.language],1);
+			RADIO_SetValue(hItem,Set.language);
 			break;
 		case WM_PAINT:
 			GUI_DrawGradientV(0,0,479,319,GUI_LIGHTBLUE,GUI_BLUE);
@@ -439,13 +485,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-			
-							hItem = pMsg->hWin;
+				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
 				CreateSoftWare();
 			
-
-		
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -499,10 +542,28 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				vol2 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_2 ));
 			
 			
-			
+				Set.language = RADIO_GetValue(WM_GetDialogItem(pMsg->hWin, ID_RADIO_0));
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
 				SelectWindow();
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
+		case ID_RADIO_0: // Notifications sent by 'Radio'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_VALUE_CHANGED:
+        // USER START (Optionally insert code for reacting on notification message)
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)

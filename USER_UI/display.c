@@ -23,6 +23,8 @@
 
 #include "DIALOG.h"
 #include "stdint.h"
+#include "str.h"
+
 /*********************************************************************
 *
 *       Defines
@@ -130,7 +132,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		RADIO_SetText(hItem,"English",0);
 		RADIO_SetText(hItem,"hanzi",1);
 	*/
-	
+/*	
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
 			BUTTON_SetFont(hItem,&GUI_FontB24);	
 			BUTTON_SetText(hItem,HZStr[10]);
@@ -145,8 +147,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_GREEN);
 					BUTTON_SetFont(hItem,&GUI_FontB24);	
 					BUTTON_SetText(hItem,HZStr[8]);
-													BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
 				}
 				else
 				{
@@ -155,7 +157,31 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_RED);
 					BUTTON_SetText(hItem,HZStr[9]);
 				}
-			
+	*/			
+				
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1);
+				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				BUTTON_SetText(hItem,String[Find_Str("Return")][Set.language]);
+	
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
+				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				BUTTON_SetTextAlign(hItem,GUI_TA_HCENTER|GUI_TA_BOTTOM);
+				if (out_flag == 0)
+				{
+					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_GREEN);
+					BUTTON_SetText(hItem,String[Find_Str("Start")][Set.language]);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
+				}
+				else
+				{
+					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_RED);
+					BUTTON_SetText(hItem,String[Find_Str("Stop")][Set.language]);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstop);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstop);
+				}
+				
+				
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);		
 			PROGBAR_SetMinMax(hItem,0,hand_vol);
 	//		PROGBAR_SetValue(hItem,out_vol);
@@ -170,9 +196,14 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		GUI_DispStringHCenterAt("dotcom",160,65);
 	
 		GUI_SetColor(GUI_YELLOW);
+	/*
 		GUI_SetFont(&GUI_FontB24);
 		GUI_DispStringAt(HZStr[0],50,20);
 		GUI_DispString(HZStr[2]);
+	*/
+		GUI_SetFont(Set.language?&GUI_FontB24:&GUI_Font20_1);
+		GUI_DispStringAt(String[Find_Str("Volume")][Set.language],50,20);
+		GUI_DispString(String[Find_Str("Setting")][Set.language]);
 	
 		GUI_SetFont(GUI_FONT_24B_1);
 		GUI_DispStringAt("mL",380,20);
@@ -302,23 +333,23 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);		
 				PROGBAR_SetMinMax(hItem,0,hand_vol);
 				PROGBAR_SetValue(hItem,out_vol);
+			
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
+			BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
 				if (out_flag == 1)
 				{
 					out_flag = 0;
-					hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
+					
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_GREEN);
-					BUTTON_SetFont(hItem,&GUI_FontB24);	
-					BUTTON_SetText(hItem,HZStr[8]);
+					BUTTON_SetText(hItem,String[Find_Str("Start")][Set.language]);
 								BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
 			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
 				}
 				else
 				{
 					out_flag = 1;
-					hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
-					BUTTON_SetFont(hItem,&GUI_FontB24);	
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_RED);
-					BUTTON_SetText(hItem,HZStr[9]);
+					BUTTON_SetText(hItem,String[Find_Str("Stop")][Set.language]);
 								BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstop);
 			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstop);
 				}

@@ -1,20 +1,3 @@
-/**
-  ******************************************************************************
-  * 文件名程: main.c 
-  * 作    者: 硬石嵌入式开发团队
-  * 版    本: V1.0
-  * 编写日期: 2017-03-30
-  * 功    能: Button按钮控件
-  ******************************************************************************
-  * 说明：
-  * 本例程配套硬石stm32开发板YS-F4Pro使用。
-  * 
-  * 淘宝：
-  * 论坛：http://www.ing10bbs.com
-  * 版权归硬石嵌入式开发团队所有，请勿商用。
-  ******************************************************************************
-  */
-/* 包含头文件 ----------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 #include "usart/bsp_debug_usart.h"
 #include "lcd/bsp_lcd.h"
@@ -194,10 +177,8 @@ void HAL_Delay(__IO uint32_t Delay)
 //{
 //	return xTaskGetTickCount();
 //}
-
 int main(void)
 {
-  /* 复位所有外设，初始化Flash接口和系统滴答定时器 */
 	SCB->VTOR = FLASH_BASE | 0x10000;//设置偏移量
 	
   HAL_Init();
@@ -214,13 +195,15 @@ int main(void)
   /* 初始化GUI */
 //  GUI_Init();	
 	LCD_BK_ON();
+
+	
 	xTaskCreate(vTaskGUI,
 							"vTaskGUI",
 							4096,
 							NULL,
 							1,
 							NULL);
-		xTaskCreate(vTaskTouch,
+	xTaskCreate(vTaskTouch,
 							"vTaskTouch",
 							512,
 							NULL,

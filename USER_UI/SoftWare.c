@@ -25,6 +25,9 @@
 #include "stdio.h"
 #include "stdint.h"
 #include "stm32f4xx_hal.h"
+
+#include "str.h"
+
 /*********************************************************************
 *
 *       Defines
@@ -110,7 +113,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     // Initialization of 'SoftWare'
     //
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
-			BUTTON_SetFont(hItem,GUI_FONT_20B_1);	
+				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				BUTTON_SetText(hItem,String[Find_Str("Return")][Set.language]);
+	
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1);
+				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				BUTTON_SetText(hItem,String[Find_Str("Upgrade")][Set.language]);
 	
     // USER START (Optionally insert additional code for further widget initialization)
     // USER END

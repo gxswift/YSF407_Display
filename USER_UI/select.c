@@ -22,7 +22,7 @@
 // USER END
 
 #include "DIALOG.h"
-
+#include "str.h"
 /*********************************************************************
 *
 *       Defines
@@ -53,7 +53,7 @@
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
-	{ BUTTON_CreateIndirect, "Return", ID_BUTTON_0, 30, 230, 80, 40, 0, 0x0, 0 },
+	{ BUTTON_CreateIndirect, "Return", ID_BUTTON_0, 330, 230, 80, 40, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -102,7 +102,9 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		break;
 	
 	case WM_INIT_DIALOG:
-
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
+				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				BUTTON_SetText(hItem,String[Find_Str("Return")][Set.language]);
 		break;
 	
   case WM_NOTIFY_PARENT:
@@ -211,13 +213,23 @@ WM_HWIN SelectWindow(void) {
 
 		ICONVIEW_SetSpace(hIcon, GUI_COORD_X, 20);
 		ICONVIEW_SetSpace(hIcon, GUI_COORD_Y, 30);
-		ICONVIEW_SetFont(hIcon, &GUI_Font20B_ASCII);
+		ICONVIEW_SetFont(hIcon,Set.language?&GUI_FontB24:&GUI_Font20_1);
+		//ICONVIEW_SetFont(hIcon, &GUI_Font20B_ASCII);
 		ICONVIEW_SetIconAlign(hIcon, ICONVIEW_IA_VCENTER);
-	
+	/*
+					hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
+				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				BUTTON_SetText(hItem,String[Find_Str("Return")][Set.language]);
+				*/
+	/*
 		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,"Basic");
 		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,"Time");
 		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,"info");
-	
+	*/
+		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,String[Find_Str("Setting")][Set.language]);
+		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,String[Find_Str("Time")][Set.language]);
+		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,String[Find_Str("Info")][Set.language]);
+		
 		ICONVIEW_SetTextColor(hIcon, ICONVIEW_CI_UNSEL, GUI_BLUE);
 		ICONVIEW_SetTextColor(hIcon, ICONVIEW_CI_SEL, GUI_RED);
 		ICONVIEW_SetBkColor(hIcon, ICONVIEW_CI_BK, GUI_LIGHTBLUE | 0x30000000);

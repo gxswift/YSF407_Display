@@ -24,6 +24,7 @@
 #include "DIALOG.h"
 #include "rtc.h"
 #include "stm32f4xx_hal.h"	
+#include "str.h"
 /*********************************************************************
 *
 *       Defines
@@ -63,7 +64,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 170, 240, 55, 40, 0, 0x0, 0 },
   { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 240, 240, 55, 40, 0, 0x0, 0 },
 	
-  { CHECKBOX_CreateIndirect, "check", ID_CHECKBOX_0, 340, 40, 100, 20, 0, 0x0, 0 },
+  { CHECKBOX_CreateIndirect, "check", ID_CHECKBOX_0, 345, 40, 100, 20, 0, 0x0, 0 },
 	
 //	{ BUTTON_CreateIndirect, "Upgrade", ID_BUTTON_0, 350, 70, 80, 40, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "EXIT", ID_BUTTON_1, 350, 160, 80, 40, 0, 0x0, 0 },
@@ -125,11 +126,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	  GUI_SetColor(GUI_BLACK);
 	  GUI_SetFont(&GUI_Font20_1);
 	
-		GUI_DispStringAt("TIME",40,250);
+
 	  GUI_DispStringAt(":", 160, 250);
 	  GUI_DispStringAt(":", 230, 250);
 	
-	
+		GUI_SetFont(Set.language?&GUI_FontB24:&GUI_Font20_1);
+		GUI_DispStringAt(String[Find_Str("Time")][Set.language],30,250);	
 	
 //	H_QR = GUI_QR_Create("http://www.baidu.com",3,GUI_QR_ECLEVEL_L,0);
 //	GUI_QR_Draw(H_QR,320,200);
@@ -138,10 +140,19 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     //
     // Initialization of 'Listwheel'
     //
+	/*
 			for(i = 0;i < 3;i++)
 			{
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0+i);
 				BUTTON_SetFont(hItem,GUI_FONT_20_1);	
+			}
+	*/
+			for(i = 0;i < 2;i++)
+			{
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1+i);
+				
+				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				BUTTON_SetText(hItem,String[Find_Str("Cancel")+i][Set.language]);
 			}
 	
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_0);
@@ -154,21 +165,24 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_1);
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);
 			SPINBOX_SetRange(hItem, 0, 59);
-			//SPINBOX_SetEdge(hItem,SPINBOX_EDGE_RIGHT);
 			SPINBOX_SetButtonSize(hItem,25);
 			SPINBOX_SetValue(hItem,RTC_Time.Minutes);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_2);
 			SPINBOX_SetRange(hItem, 0, 59);	
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);	
-			//SPINBOX_SetEdge(hItem,SPINBOX_EDGE_RIGHT);
 			SPINBOX_SetButtonSize(hItem,25);
 			SPINBOX_SetValue(hItem,RTC_Time.Seconds);
 
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_CHECKBOX_0);
+			
+				CHECKBOX_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+				CHECKBOX_SetText(hItem,String[Find_Str("Visible")][Set.language]);
+		/*		
 			CHECKBOX_SetFont(hItem,GUI_FONT_20B_1);
 			CHECKBOX_SetText(hItem, "visible");
+			*/
 			CHECKBOX_SetState(hItem,show_Flag);
 			
 		

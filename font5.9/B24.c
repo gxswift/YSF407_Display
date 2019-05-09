@@ -528,10 +528,10 @@ GUI_CONST_STORAGE unsigned char acGUI_FontB24_6309[ 60] = { /* code 6309 */
 
 GUI_CONST_STORAGE unsigned char acGUI_FontB24_6587[ 60] = { /* code 6587 */
   ________,XX______,________,
+  ________,_XX_____,________,
   ________,_XXX____,________,
-  ________,_XXXX___,________,
-  ________,__XX____,___XXX__,
-  XXXXXXXX,XXXXXXXX,XXXXXXX_,
+  ________,__XX____,_XX_____,
+  XXXXXXXX,XXXXXXXX,XXXX____,
   ______XX,_____XX_,________,
   ______XX,____XX__,________,
   ______XX,____XX__,________,
@@ -544,9 +544,9 @@ GUI_CONST_STORAGE unsigned char acGUI_FontB24_6587[ 60] = { /* code 6587 */
   ________,XXXXX___,________,
   _______X,XX_XXX__,________,
   ______XX,_____XXX,________,
-  ____XXX_,______XX,X_______,
-  __XXX___,________,XXXXX___,
-  _XX_____,________,__XX____};
+  ____XXX_,______XX,XXX_____,
+  __XXX___,________,XX______,
+  _XX_____,________,________};
 
 GUI_CONST_STORAGE unsigned char acGUI_FontB24_65F6[ 57] = { /* code 65F6 */
   ________,______XX,________,
