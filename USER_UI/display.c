@@ -193,7 +193,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		GUI_SetTextMode(GUI_TM_TRANS);
 		GUI_SetFont(GUI_FONT_32B_1);
 		GUI_SetColor(GUI_GRAY);
-		GUI_DispStringHCenterAt("dotcom",160,65);
+		GUI_DispStringHCenterAt("dotcom",240,65);
 	
 		GUI_SetColor(GUI_YELLOW);
 	/*
@@ -285,7 +285,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       // USER END
       }
       break;
-		   case ID_BUTTON_0: // Notifications sent by 'Button'
+		 case ID_BUTTON_0: // Notifications sent by 'Button'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)

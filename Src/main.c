@@ -3,6 +3,8 @@
 #include "lcd/bsp_lcd.h"
 #include "stdlib.h"
 #include "rtc.h"
+#include "adc.h"
+#include "dma.h"
 #include "touch/bsp_touch.h"
 #include "led/bsp_led.h"
 
@@ -20,6 +22,8 @@
   * 返 回 值: 无
   * 说    明: 无
   */
+	
+uint32_t ADC_Value;
 void SystemClock_Config(void)
 {
 
@@ -87,7 +91,6 @@ void SystemClock_Config(void)
   */
 
 //
-extern void Skin();
 extern WM_HWIN CreateWindow();
 extern WM_HWIN HeadWindow(void);
 
@@ -95,7 +98,6 @@ static void vTaskGUI(void *pvParameters)
 {
 	WM_SetCreateFlags(WM_CF_MEMDEV);
 	GUI_Init();
-	Skin();
 	CreateWindow();
 	HeadWindow();
 
@@ -117,11 +119,18 @@ static void vTaskTouch(void *pvParameters)
 static void vTaskLed1(void *pvParameters)
 {
 	vTaskDelay(100);
-		MX_RTC_Init();
+	MX_RTC_Init();
+	MX_DMA_Init();
+  MX_ADC1_Init();
+	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, 1)!= HAL_OK)
+	{
+		printf("ADC eror\r\n");
+	}
 	while(1)
 	{
 		HAL_GPIO_TogglePin(LED1_GPIO,LED1_GPIO_PIN);
 		vTaskDelay(800);
+		printf("AD value = %d\r\n",ADC_Value);
 	}
 }
 
@@ -177,6 +186,7 @@ void HAL_Delay(__IO uint32_t Delay)
 //{
 //	return xTaskGetTickCount();
 //}
+
 int main(void)
 {
 	SCB->VTOR = FLASH_BASE | 0x10000;//设置偏移量
@@ -188,7 +198,6 @@ int main(void)
   __HAL_RCC_CRC_CLK_ENABLE();
   MX_DEBUG_USART_Init();
   LED_GPIO_Init();
-	
   /* 电阻触摸相关GPIO初始化 */
   Touch_Init_GPIO();
   lcd_id=BSP_LCD_Init();  
@@ -211,7 +220,7 @@ int main(void)
 							NULL);
 	xTaskCreate(vTaskLed1,
 							"vTaskLed1",
-							512,
+							1024,
 							NULL,
 							2,
 							NULL);

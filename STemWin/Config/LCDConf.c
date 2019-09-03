@@ -89,7 +89,7 @@ Purpose     : Display controller configuration (single layer)
 //#define DISPLAY_ORIENTATION (GUI_MIRROR_X | GUI_MIRROR_Y)
 //#define DISPLAY_ORIENTATION (GUI_SWAP_XY)
 //#define DISPLAY_ORIENTATION (GUI_MIRROR_X | GUI_SWAP_XY)
-#define DISPLAY_ORIENTATION (GUI_MIRROR_Y | GUI_SWAP_XY)
+#define DISPLAY_ORIENTATION (GUI_MIRROR_Y | GUI_SWAP_XY)//
 //#define DISPLAY_ORIENTATION (GUI_MIRROR_X | GUI_MIRROR_Y | GUI_SWAP_XY)
 
 /*********************************************************************
@@ -242,8 +242,12 @@ void LCD_X_Config(void) {
 
 //	GUI_TOUCH_SetOrientation(GUI_MIRROR_Y | GUI_SWAP_XY);
 	
-  GUI_TOUCH_Calibrate(GUI_COORD_X, 0, XSIZE_PHYS-1, TOUCH_AD_RIGHT ,TOUCH_AD_LEFT );
-  GUI_TOUCH_Calibrate(GUI_COORD_Y, 0, YSIZE_PHYS-1,TOUCH_AD_BOTTOM ,TOUCH_AD_TOP );
+  GUI_TOUCH_Calibrate(GUI_COORD_X, 0, XSIZE_PHYS-1 ,TOUCH_AD_LEFT, TOUCH_AD_RIGHT );
+  GUI_TOUCH_Calibrate(GUI_COORD_Y, 0, YSIZE_PHYS-1 ,TOUCH_AD_TOP,TOUCH_AD_BOTTOM );
+	
+	/*
+	GUI_SetOrientation(GUI_MIRROR_X | GUI_SWAP_XY);
+	*/
 }
 
 /*********************************************************************

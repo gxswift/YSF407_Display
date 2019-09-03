@@ -293,6 +293,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			show_Flag = CHECKBOX_GetState(hItem);
 				// WM_SendMessageNoPara(WIN_Header, DATE_DIS);
 				WM_InvalidateWindow(pMsg->hWin);
+			WM_DeleteWindow(pMsg->hWin);
+		  SelectWindow();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)

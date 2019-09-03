@@ -50,6 +50,7 @@ extern volatile GUI_TIMER_TIME OS_TimeMS;
 /**
 * @brief This function handles Non maskable interrupt.
 */
+extern DMA_HandleTypeDef hdma_adc1;
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
@@ -203,6 +204,19 @@ void RCC_IRQHandler(void)
 
 
 /* USER CODE BEGIN 1 */
+/**
+  * @brief This function handles DMA2 stream0 global interrupt.
+  */
+void DMA2_Stream0_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
+
+  /* USER CODE END DMA2_Stream0_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_adc1);
+  /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
+
+  /* USER CODE END DMA2_Stream0_IRQn 1 */
+}
 
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

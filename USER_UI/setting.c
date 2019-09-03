@@ -268,7 +268,7 @@ SetText(hItem,String[Find_Str("")][Set.language]);
 			GUI_SetTextMode(GUI_TM_TRANS);
 			GUI_SetFont(GUI_FONT_32B_1);
 			GUI_SetColor(GUI_GRAY);
-			GUI_DispStringHCenterAt("dotcom",160,65);
+			GUI_DispStringHCenterAt("dotcom",240,65);
 	
 		GUI_SetColor(GUI_YELLOW);
 		GUI_SetFont(GUI_FONT_24B_1);

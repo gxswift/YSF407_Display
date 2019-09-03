@@ -113,7 +113,7 @@ extern GUI_CONST_STORAGE GUI_BITMAP bmbasicset;
 */
 
 // USER START (Optionally insert additional public code)
-void Skin()
+void BUTTON_Skin()
 {
 	BUTTON_SKINFLEX_PROPS Props;
 	BUTTON_GetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_ENABLED);
@@ -129,6 +129,35 @@ void Skin()
 	Props.aColorUpper[1] = GUI_LIGHTBLUE;
 	BUTTON_SetSkinFlexProps(&Props, BUTTON_SKINFLEX_PI_PRESSED);
 }
+
+void Radio_Skin()
+{
+	RADIO_SKINFLEX_PROPS Props;
+	RADIO_GetSkinFlexProps(&Props, RADIO_SKINFLEX_PI_PRESSED);
+	Props.ButtonSize  = 16;
+	RADIO_SetSkinFlexProps(&Props, RADIO_SKINFLEX_PI_PRESSED);
+	
+	RADIO_GetSkinFlexProps(&Props, RADIO_SKINFLEX_PI_UNPRESSED);
+	Props.ButtonSize  = 16;
+	RADIO_SetSkinFlexProps(&Props, RADIO_SKINFLEX_PI_UNPRESSED);
+}
+
+
+void Progbar_Skin()
+{
+	PROGBAR_SKINFLEX_PROPS Props;
+	PROGBAR_GetSkinFlexProps(&Props, RADIO_SKINFLEX_PI_PRESSED);
+	Props.aColorUpperL[0] = Props.aColorLowerL[0];
+	Props.aColorLowerL[1] = Props.aColorUpperL[0];
+	Props.aColorUpperL[1] = Props.aColorLowerL[1];
+	
+	Props.aColorUpperR[0] = Props.aColorLowerR[0];
+	Props.aColorLowerR[1] = Props.aColorUpperR[0];
+	Props.aColorUpperR[1] = Props.aColorLowerR[1];
+	//props.
+	PROGBAR_SetSkinFlexProps(&Props, RADIO_SKINFLEX_PI_PRESSED);
+}
+
 
 
 static void _cbDialog(WM_MESSAGE * pMsg) {
@@ -169,8 +198,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
 			TEXT_SetTextColor(hItem,GUI_RED);
-			TEXT_SetFont(hItem,&GUI_FontB24);
-			TEXT_SetText(hItem,HZStr[13]);
+//			TEXT_SetFont(hItem,&GUI_FontB24);
+//			TEXT_SetText(hItem,HZStr[13]);
+			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+			TEXT_SetText(hItem,String[Find_Str("Standby")][Set.language]);
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
 			TEXT_SetFont(hItem, GUI_FONT_20_1);
@@ -203,7 +234,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		GUI_SetTextMode(GUI_TM_TRANS);
 		GUI_SetFont(GUI_FONT_32B_1);
 		GUI_SetColor(GUI_GRAY);
-		GUI_DispStringHCenterAt("dotcom",160,65);
+		GUI_DispStringHCenterAt("dotcom",240,65);
 	
 		GUI_SetColor(GUI_YELLOW);	
 /*
@@ -269,7 +300,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         // USER START (Optionally insert code for reacting on notification message)
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
-						Skin();
+				BUTTON_Skin();
 			H_Hand = 	Display_set();
         // USER END
         break;
@@ -287,7 +318,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         // USER START (Optionally insert code for reacting on notification message)
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
-						Skin();
+						BUTTON_Skin();
 			SelectWindow();
 				//SettingWindow();
 
@@ -322,7 +353,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 WM_HWIN CreateWindow(void);
 WM_HWIN CreateWindow(void) {
   WM_HWIN hWin;
-		
+		Radio_Skin();
+	Progbar_Skin();
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
 
 	GUI_UC_SetEncodeUTF8();
