@@ -83,10 +83,10 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { SLIDER_CreateIndirect, "Slider", ID_SLIDER_2, 20, 181, 300, 25, 0, 0x0, 0 },
   { SLIDER_CreateIndirect, "Slider", ID_SLIDER_3, 20, 248, 300, 25, 0, 0x0, 0 },	
 	
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 150, 13, 90, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 150, 80, 90, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 150, 147, 90, 30, 0, 0x0, 0 },
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_3, 150, 214, 90, 30, 0, 0x0, 0 },	
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 150, 13, 100, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 150, 80, 100, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 150, 147, 100, 30, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_3, 150, 214, 100, 30, 0, 0x0, 0 },	
 	
 //  { BUTTON_CreateIndirect, "Upgrade", ID_BUTTON_0, 350, 20, 80, 40, 0, 0x0, 0 },	
 //  { BUTTON_CreateIndirect, "Time", ID_BUTTON_1, 350, 90, 80, 40, 0, 0x0, 0 },
@@ -113,9 +113,6 @@ extern WM_HWIN CreateSoftWare(void);
 extern WM_HWIN CreateWindow(void);
 extern const char *HZStr[];
 static uint16_t slider_temp;
-uint8_t tem;
-uint16_t vol1,vol2,vol3;
-uint8_t Lang_Flag = 1;
 
 
 
@@ -143,48 +140,48 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		case WM_INIT_DIALOG:
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_0);
 			SLIDER_SetRange(hItem, 30, 95);
-			SLIDER_SetValue(hItem,tem);
+			SLIDER_SetValue(hItem,Set.temperature);
 			
 		
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_1);
 			SLIDER_SetRange(hItem, 100, 500);
-			SLIDER_SetValue(hItem,vol1);
+			SLIDER_SetValue(hItem,Set.vol1);
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_2);
 			SLIDER_SetRange(hItem, 300, 999);
-			SLIDER_SetValue(hItem,vol2);		
+			SLIDER_SetValue(hItem,Set.vol2);		
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_3);
 			SLIDER_SetRange(hItem, 300, 1500);
-			SLIDER_SetValue(hItem,vol3);			
+			SLIDER_SetValue(hItem,Set.vol3);			
 		
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_0);
 			SPINBOX_SetRange(hItem, 30, 95);
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,tem);
+			SPINBOX_SetValue(hItem,Set.temperature);
 		
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_1);
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);
 			SPINBOX_SetRange(hItem, 100, 500);
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,vol1);
+			SPINBOX_SetValue(hItem,Set.vol1);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_2);
 			SPINBOX_SetRange(hItem, 300, 999);	
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);	
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,vol2);
+			SPINBOX_SetValue(hItem,Set.vol2);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_3);
 			SPINBOX_SetRange(hItem, 300, 1500);	
-			SPINBOX_SetFont(hItem,GUI_FONT_20_1);	
+			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);	
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,vol3);
+			SPINBOX_SetValue(hItem,Set.vol3);
 /*
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
 			BUTTON_SetFont(hItem, GUI_FONT_20B_1);
@@ -272,13 +269,13 @@ SetText(hItem,String[Find_Str("")][Set.language]);
 	
 		GUI_SetColor(GUI_YELLOW);
 		GUI_SetFont(GUI_FONT_24B_1);
-		GUI_DispStringAt("C",270,15);
+		GUI_DispStringAt("C",275,15);
 		GUI_DispStringAt("mL",270,82);
 		GUI_DispStringAt("mL",270,149);
 		GUI_DispStringAt("mL",270,216);		
 		
 		GUI_SetFont(GUI_FONT_8_1);
-		GUI_DispStringAt("o",190,25);
+		GUI_DispStringAt("o",270,15);
 		break;
   case WM_NOTIFY_PARENT:
     Id    = WM_GetId(pMsg->hWinSrc);
@@ -297,8 +294,7 @@ SetText(hItem,String[Find_Str("")][Set.language]);
       case WM_NOTIFICATION_VALUE_CHANGED:
         // USER START (Optionally insert code for reacting on notification message)
 					hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_0);
-					slider_temp = SLIDER_GetValue(hItem);
-			
+					slider_temp = SLIDER_GetValue(hItem);		
 					SPINBOX_SetValue(WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_0),slider_temp);
 			
         // USER END
@@ -321,7 +317,7 @@ SetText(hItem,String[Find_Str("")][Set.language]);
         // USER START (Optionally insert code for reacting on notification message)
 					hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_1);
 					slider_temp = SLIDER_GetValue(hItem);
-			
+
 					SPINBOX_SetValue(WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_1),slider_temp);
         // USER END
         break;
@@ -391,7 +387,6 @@ SetText(hItem,String[Find_Str("")][Set.language]);
         // USER START (Optionally insert code for reacting on notification message)
 					hItem = WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_0 );
 					slider_temp = SPINBOX_GetValue(hItem);
-			
 					SLIDER_SetValue(WM_GetDialogItem(pMsg->hWin, ID_SLIDER_0),slider_temp);
         // USER END
         break;
@@ -417,7 +412,6 @@ SetText(hItem,String[Find_Str("")][Set.language]);
         // USER START (Optionally insert code for reacting on notification message)
 					hItem = WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_1 );
 					slider_temp = SPINBOX_GetValue(hItem);
-			
 					SLIDER_SetValue(WM_GetDialogItem(pMsg->hWin, ID_SLIDER_1),slider_temp);
         // USER END
         break;
@@ -537,12 +531,13 @@ SetText(hItem,String[Find_Str("")][Set.language]);
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-				tem = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_0 ));
-				vol1 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_1 ));
-				vol2 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_2 ));
-			
-			
+				Set.temperature = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_0 ));
+				Set.vol1 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_1 ));
+				Set.vol2 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_2 ));
+				Set.vol3 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_3 ));
 				Set.language = RADIO_GetValue(WM_GetDialogItem(pMsg->hWin, ID_RADIO_0));
+			
+				Setting_Save();
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
 				SelectWindow();

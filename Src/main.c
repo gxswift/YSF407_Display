@@ -5,6 +5,7 @@
 #include "rtc.h"
 #include "adc.h"
 #include "dma.h"
+#include "gpio.h"
 #include "touch/bsp_touch.h"
 #include "led/bsp_led.h"
 
@@ -16,6 +17,8 @@
 
 #include "GUI.h"
 #include "WM.h"
+#include "temp.h"
+#include "control.h"
 /**
   * 函数功能: 系统时钟配置
   * 输入参数: 无
@@ -94,10 +97,12 @@ void SystemClock_Config(void)
 extern WM_HWIN CreateWindow();
 extern WM_HWIN HeadWindow(void);
 
-static void vTaskGUI(void *pvParameters)
+static void vTaskGUI(void *pvParameters)//显示
 {
 	WM_SetCreateFlags(WM_CF_MEMDEV);
 	GUI_Init();
+	
+	
 	CreateWindow();
 	HeadWindow();
 
@@ -107,7 +112,7 @@ static void vTaskGUI(void *pvParameters)
 	}
 }
 
-static void vTaskTouch(void *pvParameters)
+static void vTaskTouch(void *pvParameters)//触摸
 {
 	while(1)
 	{
@@ -116,25 +121,25 @@ static void vTaskTouch(void *pvParameters)
 	}
 }
 
-static void vTaskLed1(void *pvParameters)
+static void vTaskLed1(void *pvParameters)//计时，传感器
 {
+	TickType_t Tick;
+	
 	vTaskDelay(100);
-	MX_RTC_Init();
 	MX_DMA_Init();
   MX_ADC1_Init();
 	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, 1)!= HAL_OK)
 	{
-		printf("ADC eror\r\n");
 	}
+	Tick  = xTaskGetTickCount();
 	while(1)
-	{
-		HAL_GPIO_TogglePin(LED1_GPIO,LED1_GPIO_PIN);
-		vTaskDelay(800);
-		printf("AD value = %d\r\n",ADC_Value);
+	{		
+		vTaskDelayUntil(&Tick,1);
+		TimerTask();
 	}
 }
 
-static void vTaskLed2(void *pvParameters)
+static void vTaskLed2(void *pvParameters)//屏保
 {
 	uint16_t cnt = 0;
 	while(1)
@@ -146,7 +151,7 @@ static void vTaskLed2(void *pvParameters)
 		}
 		else
 		{
-			if (cnt < 600)
+			if (cnt < 2*600)
 				cnt++;
 			else
 			{
@@ -157,12 +162,14 @@ static void vTaskLed2(void *pvParameters)
 		vTaskDelay(100);
 	}
 }
-static void vTaskLed3(void *pvParameters)
+
+static void vTaskLed3(void *pvParameters)//控制
 {
 	while(1)
 	{
 		HAL_GPIO_TogglePin(LED3_GPIO,LED3_GPIO_PIN);
-		vTaskDelay(300);
+		Func();
+		vTaskDelay(20);
 	}
 }
 
@@ -198,13 +205,16 @@ int main(void)
   __HAL_RCC_CRC_CLK_ENABLE();
   MX_DEBUG_USART_Init();
   LED_GPIO_Init();
+	MX_GPIO_Init();
+	MX_RTC_Init();
   /* 电阻触摸相关GPIO初始化 */
   Touch_Init_GPIO();
   lcd_id=BSP_LCD_Init();  
   /* 初始化GUI */
 //  GUI_Init();	
 	LCD_BK_ON();
-
+	
+	Setting_Init();
 	
 	xTaskCreate(vTaskGUI,
 							"vTaskGUI",

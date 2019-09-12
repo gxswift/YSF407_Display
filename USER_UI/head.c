@@ -24,6 +24,7 @@
 #include "DIALOG.h"
 #include "stm32f4xx_hal.h"
 #include "rtc.h"
+#include "str.h"
 /*********************************************************************
 *
 *       Defines
@@ -74,7 +75,6 @@ char str_time[15];
 
 	RTC_TimeTypeDef RTC_Time;
 	RTC_DateTypeDef RTC_Date;
-int show_Flag = 1;
 
 static void _cbDialog(WM_MESSAGE * pMsg) {
 
@@ -110,7 +110,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			GUI_DispStringHCenterAt("Bubble Lab",240,5);
 		
 			GUI_SetFont(GUI_FONT_13B_1);
-		if (show_Flag)
+		if (Set.visable)
 		{
 			sprintf(str_time,"%2d:%2d:%2d",RTC_Time.Hours,RTC_Time.Minutes,RTC_Time.Seconds);
 			GUI_DispStringHCenterAt(str_time,440,2);	

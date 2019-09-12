@@ -24,7 +24,6 @@
 #include "DIALOG.h"
 #include "stdint.h"
 #include "str.h"
-
 /*********************************************************************
 *
 *       Defines
@@ -93,9 +92,9 @@ extern GUI_CONST_STORAGE GUI_BITMAP bmstart;
 extern GUI_CONST_STORAGE GUI_BITMAP bmstop;
 
 static uint16_t slider_temp;
-uint16_t hand_vol;
+
 uint16_t out_vol;
-int out_flag;
+
 // USER END
 
 /*********************************************************************
@@ -111,22 +110,34 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 
   switch (pMsg->MsgId) {
 		case WM_USER:
+			//WM_SendMessageNoPara(H_Hand,WM_USER);
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);	
-			PROGBAR_SetMinMax(hItem, 0, hand_vol);		
-			PROGBAR_SetValue(hItem,out_vol);
+			PROGBAR_SetMinMax(hItem, 0, Set.volhand);		
+			PROGBAR_SetValue(hItem,Set.volhand - Time.out);
+			if (Time.out == 0)
+			{
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
+				BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_GREEN);
+				BUTTON_SetText(hItem,String[Find_Str("Start")][Set.language]);
+				BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
+				BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
+			}
+			
 			break;
 		case WM_INIT_DIALOG:
 	//	printf("slider_temp = %d\r\n",slider_temp);
+			State.hwinflag = 1;
+			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_0);
 			SLIDER_SetRange(hItem, 0, 2000);
-			SLIDER_SetValue(hItem,hand_vol);
+			SLIDER_SetValue(hItem,Set.volhand);
 		
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_0);
 			SPINBOX_SetRange(hItem, 0, 2000);
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,hand_vol);
+			SPINBOX_SetValue(hItem,Set.volhand);
 /*			
 		hItem = WM_GetDialogItem(pMsg->hWin, ID_RADIO_0);
 		RADIO_SetText(hItem,"English",0);
@@ -166,7 +177,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
 				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
 				BUTTON_SetTextAlign(hItem,GUI_TA_HCENTER|GUI_TA_BOTTOM);
-				if (out_flag == 0)
+				if (State.outflag == 0)
 				{
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_GREEN);
 					BUTTON_SetText(hItem,String[Find_Str("Start")][Set.language]);
@@ -183,7 +194,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				
 				
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);		
-			PROGBAR_SetMinMax(hItem,0,hand_vol);
+			PROGBAR_SetMinMax(hItem,0,Set.volhand);
 	//		PROGBAR_SetValue(hItem,out_vol);
 			PROGBAR_SetFont(hItem,GUI_FONT_16B_1);
 
@@ -313,6 +324,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 //				tem = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_0 ));
 //				vol1 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_1 ));
 //				vol2 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_2 ));
+				State.hwinflag = 0;
+				Setting_Save();
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
 				CreateWindow();
@@ -329,29 +342,29 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:
-				hand_vol = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_0 ));
+				Set.volhand = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_0 ));
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);		
-				PROGBAR_SetMinMax(hItem,0,hand_vol);
+				PROGBAR_SetMinMax(hItem,0,Set.volhand);
 				PROGBAR_SetValue(hItem,out_vol);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
 			BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
-				if (out_flag == 1)
+				if (State.outflag == 1)//按下停止，显示开始
 				{
-					out_flag = 0;
-					
+					Out_Stop();
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_GREEN);
 					BUTTON_SetText(hItem,String[Find_Str("Start")][Set.language]);
-								BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstart);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstart);
 				}
 				else
 				{
-					out_flag = 1;
+					Out_Start(Set.volhand);
+					
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_RED);
 					BUTTON_SetText(hItem,String[Find_Str("Stop")][Set.language]);
-								BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstop);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstop);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmstop);
+					BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmstop);
 				}
         // USER END
         break;

@@ -99,7 +99,6 @@ CALENDAR_DATE Date;
 *       _cbDialog
 */
 extern WM_HWIN            hWinBk;
-extern int show_Flag;
 
 //uint8_t RTC_SetFlag = 0;
 
@@ -183,7 +182,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			CHECKBOX_SetFont(hItem,GUI_FONT_20B_1);
 			CHECKBOX_SetText(hItem, "visible");
 			*/
-			CHECKBOX_SetState(hItem,show_Flag);
+			CHECKBOX_SetState(hItem,Set.visable);
 			
 		
 			CALENDAR_SetDefaultFont(CALENDAR_FI_CONTENT,&GUI_Font20B_1);
@@ -290,11 +289,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				}
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_CHECKBOX_0);
-			show_Flag = CHECKBOX_GetState(hItem);
+			Set.visable = CHECKBOX_GetState(hItem);
+			Setting_Save();
 				// WM_SendMessageNoPara(WIN_Header, DATE_DIS);
 				WM_InvalidateWindow(pMsg->hWin);
 			WM_DeleteWindow(pMsg->hWin);
-		  SelectWindow();
+		  SelectWindow(); 
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)

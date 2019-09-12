@@ -9,8 +9,6 @@
 #define C_UTF8	0
 
 
-SET_PARAM Set;
-
 
 
 extern GUI_CONST_STORAGE GUI_FONT GUI_FontB24;

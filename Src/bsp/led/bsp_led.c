@@ -72,6 +72,11 @@ void LED_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   /* 初始化LED3对应引脚IO */
   HAL_GPIO_Init(LED3_GPIO, &GPIO_InitStruct);
+	
+	
+	
+	
+	
   
 }
 

@@ -19,6 +19,7 @@
 */
 
 // USER START (Optionally insert additional includes)
+#include "control.h"
 // USER END
 
 #include "DIALOG.h"
@@ -69,13 +70,13 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 
   { BUTTON_CreateIndirect, "Status", ID_BUTTON_0, 350, 40, 80, 80, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "Setting", ID_BUTTON_1, 350, 180, 80, 80, 0, 0x0, 0 },
-	{ TEXT_CreateIndirect, "85", ID_TEXT_0, 200, 30, 90, 50, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "0", ID_TEXT_1, 200, 90, 90, 50, 0, 0x0, 0 },
+	{ TEXT_CreateIndirect, "50", ID_TEXT_0, 200, 30, 90, 50, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "--", ID_TEXT_1, 200, 90, 90, 50, 0, 0x0, 0 },
 	{ TEXT_CreateIndirect, "heat", ID_TEXT_2, 200, 150, 90, 50, 0, 0x0, 0 },
 
 	{ PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 20, 25, 80, 230, 1, 0x0, 0 },
-	{ TEXT_CreateIndirect, "--o", ID_TEXT_3, 100, 150, 35, 20, 0, 0x0, 0 },
-	{ TEXT_CreateIndirect, "--o", ID_TEXT_4, 100, 50, 35, 20, 0, 0x0, 0 },
+	{ TEXT_CreateIndirect, "--o", ID_TEXT_3, 100, 200, 35, 20, 0, 0x0, 0 },
+	{ TEXT_CreateIndirect, "--o", ID_TEXT_4, 100, 60, 35, 20, 0, 0x0, 0 },
 	{ TEXT_CreateIndirect, "--o", ID_TEXT_5, 100, 30, 35, 20, 0, 0x0, 0 },
 	
 	{ TEXT_CreateIndirect, "15000", ID_TEXT_6, 200, 210, 90, 50, 0, 0x0, 0 },
@@ -159,7 +160,9 @@ void Progbar_Skin()
 }
 
 
-
+char str_temp[20];
+uint8_t propval;
+uint8_t propset;
 static void _cbDialog(WM_MESSAGE * pMsg) {
 	WM_HWIN hItem;
   int NCode;
@@ -196,8 +199,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmbasicset);
 		
 			
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
 			TEXT_SetTextColor(hItem,GUI_RED);
+			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+			
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
+			TEXT_SetTextColor(hItem,GUI_ORANGE);
 //			TEXT_SetFont(hItem,&GUI_FontB24);
 //			TEXT_SetText(hItem,HZStr[13]);
 			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
@@ -205,7 +212,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
 			TEXT_SetFont(hItem, GUI_FONT_20_1);
-			TEXT_SetTextColor(hItem, GUI_RED);
+			TEXT_SetTextColor(hItem, GUI_GREEN);
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
 			TEXT_SetFont(hItem, GUI_FONT_20_1);
@@ -213,7 +220,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);
 			TEXT_SetFont(hItem, GUI_FONT_20_1);
-			TEXT_SetTextColor(hItem, GUI_GREEN);
+			TEXT_SetTextColor(hItem, GUI_RED);
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
 			TEXT_SetFont(hItem, GUI_FONT_24B_1);
@@ -222,13 +229,83 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);
 			PROGBAR_SetMinMax(hItem, 0, 100);
 			PROGBAR_SetValue(hItem, 10);
-			PROGBAR_SetValue(hItem, 50);
+	/*		PROGBAR_SetValue(hItem, 50);
 			PROGBAR_SetValue(hItem, 85);
-			PROGBAR_SetValue(hItem, 95);
+			PROGBAR_SetValue(hItem, 95);*/
 			PROGBAR_SetBarColor(hItem, 0, GUI_GREEN);
 			PROGBAR_SetBarColor(hItem, 1, GUI_LIGHTYELLOW);
 		break;
+	case WM_TIMER:
+			//显示温度
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0);
 	
+			if (State.temperature == 150)
+				sprintf((char*)str_temp,"%s","--");
+			else if (State.temperature == 151)
+				sprintf((char*)str_temp,"%s","XX");
+			else	
+				sprintf((char*)str_temp,"%d",State.temperature);
+			TEXT_SetText(hItem,str_temp);
+			//加热
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
+			if (State.heaterflag)
+				sprintf((char*)str_temp,String[Find_Str("ON")][Set.language]);
+			else
+				sprintf((char*)str_temp,String[Find_Str("OFF")][Set.language]);
+				TEXT_SetText(hItem,str_temp);
+				
+			//状态	
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
+			if (State.inflag)
+			{
+				sprintf((char*)str_temp,String[Find_Str("Water In")][Set.language]);
+			}
+			else if (State.outflag)
+			{
+				sprintf((char*)str_temp,String[Find_Str("Water Out")][Set.language]);
+			}
+			else
+			{
+				sprintf((char*)str_temp,String[Find_Str("Standby")][Set.language]);
+			}
+			TEXT_SetText(hItem,str_temp);
+			//水量
+			//Gradual_change
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);
+			propval = PROGBAR_GetValue(ID_PROGBAR_0);
+			if(State.lowflag == 0)
+			{
+				if (propset<=8)
+					propset+=2;
+				if (propset>=12)
+					propset-=2;
+			}
+			else if (State.highflag == 0)
+			{
+				if (propset<=28)
+					propset+=2;
+				if (propset>=32)
+					propset-=2;
+			}
+			else if (State.warnflag == 0)
+			{
+				if (propset<=83)
+					propset+=2;
+				if (propset>=87)
+					propset-=2;
+			}
+			else
+			{
+				if (propset<=93)
+					propset+=2;
+				if (propset>=97)
+					propset-=2;
+			}
+			PROGBAR_SetValue(hItem, propset);
+			
+			WM_RestartTimer(pMsg->Data.v, 500);
+		break;
+			
 	case WM_PAINT:
 		GUI_DrawGradientV(0,0,479,319,GUI_LIGHTBLUE,GUI_BLUE);
 		GUI_SetTextMode(GUI_TM_TRANS);
@@ -353,10 +430,13 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 WM_HWIN CreateWindow(void);
 WM_HWIN CreateWindow(void) {
   WM_HWIN hWin;
-		Radio_Skin();
+	WM_HTIMER hTimer;
+	
+	Radio_Skin();
 	Progbar_Skin();
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
-
+	hTimer = WM_CreateTimer(hWin, 0, 100, 0);
+	
 	GUI_UC_SetEncodeUTF8();
   return hWin;
 }
