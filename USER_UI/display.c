@@ -68,7 +68,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { BUTTON_CreateIndirect, "Start", ID_BUTTON_2, 190, 170, 100, 100, 0, 0x0, 0 },
  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 40, 60, 400, 40, 0, 0x0, 0 },
  
-  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 200, 15, 90, 35, 0, 0x0, 0 },
+  { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 280, 15, 90, 35, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -87,6 +87,7 @@ extern const char *HZStr[];
 
 extern WM_HWIN CreateWindow(void);
 extern WM_HWIN CreateSoftWare(void);
+extern WM_HWIN SelectWindow(void);
 
 extern GUI_CONST_STORAGE GUI_BITMAP bmstart;
 extern GUI_CONST_STORAGE GUI_BITMAP bmstop;
@@ -213,11 +214,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		GUI_DispString(HZStr[2]);
 	*/
 		GUI_SetFont(Set.language?&GUI_FontB24:&GUI_Font20_1);
-		GUI_DispStringAt(String[Find_Str("Volume")][Set.language],50,20);
+		GUI_DispStringAt(String[Find_Str("Volume")][Set.language],130,20);
 		GUI_DispString(String[Find_Str("Setting")][Set.language]);
-	
+/*	
 		GUI_SetFont(GUI_FONT_24B_1);
 		GUI_DispStringAt("mL",380,20);
+	*/
 		break;
 	
   case WM_NOTIFY_PARENT:
@@ -328,7 +330,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				Setting_Save();
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
-				CreateWindow();
+			//	CreateWindow();
+				SelectWindow();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)

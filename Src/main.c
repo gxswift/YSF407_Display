@@ -96,13 +96,12 @@ void SystemClock_Config(void)
 //
 extern WM_HWIN CreateWindow();
 extern WM_HWIN HeadWindow(void);
-
+extern void Skin();
 static void vTaskGUI(void *pvParameters)//显示
 {
 	WM_SetCreateFlags(WM_CF_MEMDEV);
 	GUI_Init();
-	
-	
+	Skin();
 	CreateWindow();
 	HeadWindow();
 
@@ -121,7 +120,7 @@ static void vTaskTouch(void *pvParameters)//触摸
 	}
 }
 
-static void vTaskLed1(void *pvParameters)//计时，传感器
+static void vTaskTimer(void *pvParameters)//计时，传感器
 {
 	TickType_t Tick;
 	
@@ -139,7 +138,7 @@ static void vTaskLed1(void *pvParameters)//计时，传感器
 	}
 }
 
-static void vTaskLed2(void *pvParameters)//屏保
+static void vTaskScreen(void *pvParameters)//屏保
 {
 	uint16_t cnt = 0;
 	while(1)
@@ -151,10 +150,11 @@ static void vTaskLed2(void *pvParameters)//屏保
 		}
 		else
 		{
-			if (cnt < 2*600)
+			if (cnt < Set.lighttime*600)
 				cnt++;
 			else
 			{
+				if (Set.lighttime != 0)
 				LCD_BK_OFF();
 			}
 		}
@@ -163,7 +163,7 @@ static void vTaskLed2(void *pvParameters)//屏保
 	}
 }
 
-static void vTaskLed3(void *pvParameters)//控制
+static void vTaskFun(void *pvParameters)//控制
 {
 	while(1)
 	{
@@ -220,28 +220,28 @@ int main(void)
 							"vTaskGUI",
 							4096,
 							NULL,
-							1,
+							2,
 							NULL);
 	xTaskCreate(vTaskTouch,
 							"vTaskTouch",
 							512,
 							NULL,
-							1,
+							3,
 							NULL);
-	xTaskCreate(vTaskLed1,
-							"vTaskLed1",
-							1024,
-							NULL,
-							2,
-							NULL);
-	xTaskCreate(vTaskLed2,
-							"vTaskLed2",
+	xTaskCreate(vTaskTimer,
+							"vTaskTimer",
 							512,
 							NULL,
 							2,
 							NULL);
-	xTaskCreate(vTaskLed3,
-							"vTaskLed3",
+	xTaskCreate(vTaskScreen,
+							"vTaskScreen",
+							256,
+							NULL,
+							4,
+							NULL);
+	xTaskCreate(vTaskFun,
+							"vTaskFun",
 							512,
 							NULL,
 							2,

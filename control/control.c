@@ -97,8 +97,6 @@ typedef struct
 #define Circle(i)		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_0,i)
 
 
-#define CIRCLETIME			2*60*1000
-
 enum{Init,Wash,Normal};
 
 //0关闭	1出水 2循环
@@ -107,12 +105,12 @@ void Pump_Out(uint8_t state)
 	if(state == 1)
 	{
 		EN_Set(1);
-		Jump_Step(1);
+		Jump_Step(19-Set.outspeed);
 	}
 	else if (state == 2)
 	{
 		EN_Set(1);
-		Jump_Step(16);
+		Jump_Step(19-Set.circlespeed);//16
 	}
 	else
 	{
@@ -160,24 +158,32 @@ void Circle_Stop()
 
 typedef struct 
 {
-	uint32_t vol1;
-	uint32_t vol2;
-	uint32_t vol3;
-	uint32_t volhand;
-	uint32_t out;
-	uint32_t temperature;
-	uint32_t language;
-	uint32_t visable;
-	uint32_t init;
+	uint32_t vol1;//单击
+	uint32_t vol2;//双击
+	uint32_t vol3;//长按
+	uint32_t volhand;//手动
+	uint32_t out;//出水
+	uint32_t temperature;//温度
+	uint32_t language;//语言
+	uint32_t visable;//可见
+	uint32_t init;//首次设置
+	
+	uint32_t lighttime;//屏幕时间 min
+	uint32_t circletime;//循环时间 s
+	uint32_t circleinterval;//循环间隔 min
+	uint32_t outspeed;//出水等级
+	uint32_t circlespeed;//循环等级
+
 }SETTING;
 
 HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1);
 HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR1, Number);
 */
+#define COUNT(a)	(sizeof(a) / sizeof(uint32_t))
 void Setting_Save()
 {
 	uint8_t i;
-	for(i = 0;i < 9;i++)
+	for(i = 0;i < COUNT(Set);i++)
 	{
 		HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR1+i, *((uint32_t *)&Set+i));
 		printf("set%d ->%d\r\n",i,*((uint32_t *)&Set+i));
@@ -199,9 +205,15 @@ void Setting_Init()
 		Set.language = 1;
 		Set.visable = 1;
 		Set.init = 1;
+		Set.lighttime = 2;
+		Set.circletime = 10;
+		Set.circleinterval = 15;
+		Set.circlespeed = 3;
+		Set.outspeed = 10;
+		
 		Setting_Save();
 	}
-	for(i = 0;i < 9;i++)
+	for(i = 0;i < COUNT(Set);i++)
 	{
 		*((uint32_t *)&Set+i) = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1+i);
 		printf("set%d ->%d\r\n",i,*((uint32_t *)&Set+i));
@@ -346,14 +358,17 @@ void Control()
 				State.outflag = 0;
 				Out_Stop();
 			}
+			//----------------------------------------------
 			//循环
-			if (State.outflag == 0)
+			if (Set.circleinterval == 0 || Set.circletime == 0)
+				return;
+			if (State.outflag == 0 && State.inflag == 0)
 			{
-				if(Time.circle > CIRCLETIME)
+				if(Time.circle > Set.circleinterval * 60 * 1000)
 				{
 					Circle_Start();
 				}
-				if (Time.circle > CIRCLETIME + 10*1000)
+				if (Time.circle > Set.circleinterval * 60 * 1000 + Set.circletime * 1000)
 				{
 					Time.circle = 0;
 					Circle_Stop();
@@ -375,11 +390,12 @@ void Control()
 
 
 
-
+extern uint32_t ADC_Value;
 void Debug_Print()
 {
 	printf("加热%d\t进水阀%d\t出水阀%d\r\n",State.heaterflag,State.inflag,State.outflag);
 	printf("低%d\t高%d\t报警%d\t温度%d\r\n",State.lowflag,State.highflag,State.warnflag,State.temperature);
+	printf("ad = %d\r\n",ADC_Value);
 	printf("---------------------------------------------------\r\n\r\n");
 }
 
@@ -398,7 +414,7 @@ void TimerTask()
 		{
 			cnt500 = 0;
 			HAL_GPIO_TogglePin(LED1_GPIO,LED1_GPIO_PIN);
-			Debug_Print();
+	//		Debug_Print();
 		}
 	}
 	
@@ -414,6 +430,7 @@ void TimerTask()
 		{
 			cnt10 = 0;
 		//-------------------------------	
+			State.totalvolume++;
 			Time.out--;
 			Time.circle = 0;
 			if (State.hwinflag == 1)
@@ -430,7 +447,6 @@ void TimerTask()
 	{
 		Time.circle++;
 	}
-	
 }
 //暂不用发送无参变量信号方式，改用窗口定时器自动刷新获取变量
 void Func()

@@ -88,8 +88,8 @@ Purpose     : Display controller configuration (single layer)
 //#define DISPLAY_ORIENTATION (GUI_MIRROR_Y)
 //#define DISPLAY_ORIENTATION (GUI_MIRROR_X | GUI_MIRROR_Y)
 //#define DISPLAY_ORIENTATION (GUI_SWAP_XY)
-//#define DISPLAY_ORIENTATION (GUI_MIRROR_X | GUI_SWAP_XY)
-#define DISPLAY_ORIENTATION (GUI_MIRROR_Y | GUI_SWAP_XY)//
+#define DISPLAY_ORIENTATION (GUI_MIRROR_X | GUI_SWAP_XY)
+//#define DISPLAY_ORIENTATION (GUI_MIRROR_Y | GUI_SWAP_XY)//”√
 //#define DISPLAY_ORIENTATION (GUI_MIRROR_X | GUI_MIRROR_Y | GUI_SWAP_XY)
 
 /*********************************************************************

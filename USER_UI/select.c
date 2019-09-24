@@ -53,7 +53,7 @@
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
-	{ BUTTON_CreateIndirect, "Return", ID_BUTTON_0, 330, 230, 80, 40, 0, 0x0, 0 },
+//	{ BUTTON_CreateIndirect, "Return", ID_BUTTON_0, 330, 230, 80, 40, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -86,6 +86,10 @@ extern WM_HWIN SettingWindow(void);
 extern WM_HWIN CalenderWindow(void);
 extern WM_HWIN CreateSoftWare(void);
 extern WM_HWIN CreateWindow(void);
+extern WM_HWIN Display_set(void);
+extern WM_HWIN SettingWindow2(void);
+
+extern WM_HWIN H_Hand;
 
 static void _cbDialog(WM_MESSAGE * pMsg) {
   int NCode;
@@ -144,12 +148,29 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 						SettingWindow();
 						break;
 					case 1:
-					WM_DeleteWindow(pMsg->hWin);
-					CalenderWindow();
+						SettingWindow2();
+						hItem = pMsg->hWin;
+						WM_DeleteWindow(hItem);
 						break;
 					case 2:
+						hItem = pMsg->hWin;
+						WM_DeleteWindow(hItem);
+			//			BUTTON_Skin();
+						H_Hand = 	Display_set();
+						break;
+					case 3:
+						WM_DeleteWindow(pMsg->hWin);
+						CalenderWindow();
+						break;
+					
+					case 4:
 						WM_DeleteWindow(pMsg->hWin);
 						CreateSoftWare();
+						break;
+					case 5:
+						hItem = pMsg->hWin;
+						WM_DeleteWindow(hItem);
+						CreateWindow();
 						break;
 					default:
 						break;
@@ -201,21 +222,21 @@ WM_HWIN SelectWindow(void) {
 	ICONVIEW_Handle hIcon;
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
 	hIcon = ICONVIEW_CreateEx(20,
-		30, 
+		10, 
 		440,
-		200, 
+		260, //200
 		hWin,//WM_HBKWIN, 
 		WM_CF_SHOW | WM_CF_HASTRANS,
 		ICONVIEW_CF_AUTOSCROLLBAR_V, //0,//
 		ID_ICONVIEW_0,
-		130,//
-		150);
+		110,//
+		110);//150
 
-		ICONVIEW_SetSpace(hIcon, GUI_COORD_X, 20);
+		ICONVIEW_SetSpace(hIcon, GUI_COORD_X, 50);
 		ICONVIEW_SetSpace(hIcon, GUI_COORD_Y, 30);
 		ICONVIEW_SetFont(hIcon,Set.language?&GUI_FontB24:&GUI_Font20_1);
 		//ICONVIEW_SetFont(hIcon, &GUI_Font20B_ASCII);
-		ICONVIEW_SetIconAlign(hIcon, ICONVIEW_IA_VCENTER);
+		ICONVIEW_SetIconAlign(hIcon, ICONVIEW_IA_VCENTER|ICONVIEW_IA_TOP);
 	/*
 					hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
 				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
@@ -227,10 +248,14 @@ WM_HWIN SelectWindow(void) {
 		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,"info");
 	*/
 		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,String[Find_Str("Setting")][Set.language]);
+		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,String[Find_Str("Circle")][Set.language]);
+		ICONVIEW_AddBitmapItem(hIcon,&bmoperate,String[Find_Str("Manual")][Set.language]);
+
 		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,String[Find_Str("Time")][Set.language]);
 		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,String[Find_Str("Info")][Set.language]);
-		
-		ICONVIEW_SetTextColor(hIcon, ICONVIEW_CI_UNSEL, GUI_BLUE);
+		ICONVIEW_AddBitmapItem(hIcon,&bmbasicset,String[Find_Str("Return")][Set.language]);
+
+		ICONVIEW_SetTextColor(hIcon, ICONVIEW_CI_UNSEL, GUI_LIGHTYELLOW);
 		ICONVIEW_SetTextColor(hIcon, ICONVIEW_CI_SEL, GUI_RED);
 		ICONVIEW_SetBkColor(hIcon, ICONVIEW_CI_BK, GUI_LIGHTBLUE | 0x30000000);
 		ICONVIEW_SetBkColor(hIcon, ICONVIEW_CI_SEL, GUI_LIGHTGREEN | 0x80000000);

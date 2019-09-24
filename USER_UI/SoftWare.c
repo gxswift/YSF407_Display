@@ -102,7 +102,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		GUI_DispStringHCenterAt(str,240,20);
 	
 		CPU_ID = (uint32_t*)(0x1fff7a10);
-		sprintf(str,"CPU ID:\r\n%08x.%08x.%08x",CPU_ID[0],CPU_ID[1],CPU_ID[2]);
+		sprintf(str,"CPU ID:\r\n%08X.%08X.%08X",CPU_ID[0],CPU_ID[1],CPU_ID[2]);
 		GUI_DispStringHCenterAt(str,240,80);
 	
 		sprintf(str,"Compile time:\r\n%s--%s",__DATE__,__TIME__);

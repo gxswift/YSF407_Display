@@ -1178,6 +1178,11 @@
               <FilePath>..\USER_UI\setting.c</FilePath>
             </File>
             <File>
+              <FileName>setting2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER_UI\setting2.c</FilePath>
+            </File>
+            <File>
               <FileName>SoftWare.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER_UI\SoftWare.c</FilePath>

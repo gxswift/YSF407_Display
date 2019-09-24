@@ -47,6 +47,16 @@ const char *String[][2]=
 	{"Time","时间"},
 	{"Chinese","中文"},
 	{"English","英文"},
+	{"Circle","循环"},
+	{"Screen Time","屏保时间"},
+	{"Circle Time","循环时间"},
+	{"Circle Interval","循环间隔"},
+	{"Circle Speed","循环水速"},
+	{"Work Speed","工作水速"},
+	{"Wait","等待"},
+	{" OFF","关闭"},
+	{"Connect","连接"},
+	{"Disconnect","断开"},
 	{"",""},
 };
 #else
@@ -79,6 +89,16 @@ const char *String[][2]=
 	{"Time","\xe6\x97\xb6\xe9\x97\xb4"},
 	{"Chinese","\xe4\xb8\xad\xe6\x96\x87"},
 	{"English","\xe8\x8b\xb1\xe6\x96\x87"},
+	{"Circle","\xe5\xbe\xaa\xe7\x8e\xaf"},
+	{"Screen Time","\xe5\xb1\x8f\xe4\xbf\x9d\xe6\x97\xb6\xe9\x97\xb4"},
+	{"Circle Time","\xe5\xbe\xaa\xe7\x8e\xaf\xe6\x97\xb6\xe9\x97\xb4"},
+	{"Circle Interval","\xe5\xbe\xaa\xe7\x8e\xaf\xe9\x97\xb4\xe9\x9a\x94"},
+	{"Circle Speed","\xe5\xbe\xaa\xe7\x8e\xaf\xe6\xb0\xb4\xe9\x80\x9f"},
+	{"Work Speed","\xe5\xb7\xa5\xe4\xbd\x9c\xe6\xb0\xb4\xe9\x80\x9f"},
+	{"Wait","\xe7\xad\x89\xe5\xbe\x85"},
+	{" OFF","\xe5\x85\xb3\xe9\x97\xad"},
+	{"Connect","\xe8\xbf\x9e\xe6\x8e\xa5"},
+	{"Disconnect","\xe6\x96\xad\xe5\xbc\x80"},
 	{"",""},
 };
 

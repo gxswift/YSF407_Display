@@ -36,6 +36,7 @@
 #define ID_TEXT_1 (GUI_ID_USER + 0x02)
 #define ID_TEXT_2 (GUI_ID_USER + 0x03)
 #define ID_TEXT_3 (GUI_ID_USER + 0x04)
+#define ID_TEXT_4 (GUI_ID_USER + 0x05)
 
 #define ID_SLIDER_0 (GUI_ID_USER + 0x14)
 #define ID_SLIDER_1 (GUI_ID_USER + 0x15)
@@ -46,6 +47,7 @@
 #define ID_SPINBOX_1 (GUI_ID_USER + 0x22)
 #define ID_SPINBOX_2 (GUI_ID_USER + 0x23)
 #define ID_SPINBOX_3 (GUI_ID_USER + 0x24)
+#define ID_SPINBOX_4 (GUI_ID_USER + 0x25)
 
 #define ID_BUTTON_0 (GUI_ID_USER + 0x31)
 #define ID_BUTTON_1 (GUI_ID_USER + 0x32)
@@ -77,6 +79,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { TEXT_CreateIndirect, "Single-click", ID_TEXT_1, 20, 82, 140, 30, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "double-click", ID_TEXT_2, 20, 149, 140, 30, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "longpress", ID_TEXT_3, 20, 216, 140, 30, 0, 0x0, 0 },	
+  { TEXT_CreateIndirect, "longpress", ID_TEXT_4, 350, 15, 140, 30, 0, 0x0, 0 },	
 	
   { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 20, 47, 300, 25, 0, 0x0, 0 },
   { SLIDER_CreateIndirect, "Slider", ID_SLIDER_1, 20, 114, 300, 25, 0, 0x0, 0 },
@@ -86,6 +89,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_0, 150, 13, 100, 30, 0, 0x0, 0 },
   { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_1, 150, 80, 100, 30, 0, 0x0, 0 },
   { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_2, 150, 147, 100, 30, 0, 0x0, 0 },
+	
   { SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_3, 150, 214, 100, 30, 0, 0x0, 0 },	
 	
 //  { BUTTON_CreateIndirect, "Upgrade", ID_BUTTON_0, 350, 20, 80, 40, 0, 0x0, 0 },	
@@ -93,7 +97,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { BUTTON_CreateIndirect, "Cancel", ID_BUTTON_2, 350, 160, 80, 40, 0, 0x0, 0 },
 	{ BUTTON_CreateIndirect, "Confirm", ID_BUTTON_3, 350, 230, 80, 40, 0, 0x0, 0 },
 	
-	{ RADIO_CreateIndirect, "Radio", ID_RADIO_0, 350, 40, 100, 100, 0, 0x3002, 0 },
+	{ SPINBOX_CreateIndirect, "Spinbox", ID_SPINBOX_4, 350, 60, 80, 60, 0, 0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -127,7 +131,6 @@ SetText(hItem,String[Find_Str("")][Set.language]);
 *       _cbDialog
 */
 
-	WM_HWIN h_calender;
 static void _cbDialog(WM_MESSAGE * pMsg) {
 	WM_HWIN hItem;
   int NCode;
@@ -139,49 +142,56 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   switch (pMsg->MsgId) {
 		case WM_INIT_DIALOG:
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_0);
-			SLIDER_SetRange(hItem, 30, 95);
-			SLIDER_SetValue(hItem,Set.temperature);
+			SLIDER_SetRange(hItem, 0, 60);
+			SLIDER_SetValue(hItem,Set.circletime);
 			
 		
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_1);
-			SLIDER_SetRange(hItem, 100, 500);
-			SLIDER_SetValue(hItem,Set.vol1);
+			SLIDER_SetRange(hItem, 0, 60);
+			SLIDER_SetValue(hItem,Set.circleinterval);
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_2);
-			SLIDER_SetRange(hItem, 300, 999);
-			SLIDER_SetValue(hItem,Set.vol2);		
+			SLIDER_SetRange(hItem, 1, 10);
+			SLIDER_SetValue(hItem,Set.circlespeed);		
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_3);
-			SLIDER_SetRange(hItem, 300, 1500);
-			SLIDER_SetValue(hItem,Set.vol3);			
+			SLIDER_SetRange(hItem, 1, 10);
+			SLIDER_SetValue(hItem,Set.outspeed);			
 		
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_0);
-			SPINBOX_SetRange(hItem, 30, 95);
+			SPINBOX_SetRange(hItem, 0, 60);
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,Set.temperature);
+			SPINBOX_SetValue(hItem,Set.circletime);
 		
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_1);
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);
-			SPINBOX_SetRange(hItem, 100, 500);
+			SPINBOX_SetRange(hItem, 0, 60);
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,Set.vol1);
+			SPINBOX_SetValue(hItem,Set.circleinterval);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_2);
-			SPINBOX_SetRange(hItem, 300, 999);	
+			SPINBOX_SetRange(hItem, 1, 10);	
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);	
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,Set.vol2);
+			SPINBOX_SetValue(hItem,Set.circlespeed);
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_3);
-			SPINBOX_SetRange(hItem, 300, 1500);	
+			SPINBOX_SetRange(hItem, 1, 10);	
 			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);	
 			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_CENTER);
 			SPINBOX_SetButtonSize(hItem,20);
-			SPINBOX_SetValue(hItem,Set.vol3);
+			SPINBOX_SetValue(hItem,Set.outspeed);
+			
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_SPINBOX_4);
+			SPINBOX_SetRange(hItem, 0, 10);	
+			SPINBOX_SetFont(hItem,GUI_FONT_20B_1);	
+			SPINBOX_SetEdge(hItem,SPINBOX_EDGE_RIGHT);
+			SPINBOX_SetButtonSize(hItem,40);
+			SPINBOX_SetValue(hItem,Set.lighttime);
 /*
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_2);
 			BUTTON_SetFont(hItem, GUI_FONT_20B_1);
@@ -245,8 +255,11 @@ SetText(hItem,String[Find_Str("")][Set.language]);
 				
 				TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
 				//TEXT_SetText(hItem,String[Find_Str("")][Set.language]);
-				TEXT_SetText(hItem,String[i+1][Set.language]);
+				TEXT_SetText(hItem,String[Find_Str("Circle Time")+i][Set.language]);
 			}
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
+			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+			TEXT_SetText(hItem,String[Find_Str("Screen Time")][Set.language]);
 			
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_RADIO_0);
@@ -266,17 +279,13 @@ SetText(hItem,String[Find_Str("")][Set.language]);
 			GUI_SetFont(GUI_FONT_32B_1);
 			GUI_SetColor(GUI_GRAY);
 			GUI_DispStringHCenterAt("dotcom",240,65);
-	
-		GUI_SetColor(GUI_YELLOW);
-		GUI_SetFont(GUI_FONT_24B_1);
-		GUI_DispStringAt("C",275,15);
-//		GUI_DispStringAt("mL",270,82);
-//		GUI_DispStringAt("mL",270,149);
-//		GUI_DispStringAt("mL",270,216);		
 		
-		GUI_SetFont(GUI_FONT_8_1);
-		GUI_DispStringAt("o",270,15);
-		break;
+			GUI_SetColor(GUI_YELLOW);
+			GUI_SetFont(GUI_FONT_24B_1);
+			GUI_DispStringAt("Sec",270,15);
+			GUI_DispStringAt("Min",270,82);
+		
+			break;
   case WM_NOTIFY_PARENT:
     Id    = WM_GetId(pMsg->hWinSrc);
     NCode = pMsg->Data.v;
@@ -497,8 +506,6 @@ SetText(hItem,String[Find_Str("")][Set.language]);
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-				WM_DeleteWindow(pMsg->hWin);
-				h_calender = CalenderWindow();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -531,12 +538,13 @@ SetText(hItem,String[Find_Str("")][Set.language]);
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-				Set.temperature = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_0 ));
-				Set.vol1 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_1 ));
-				Set.vol2 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_2 ));
-				Set.vol3 = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_3 ));
-				Set.language = RADIO_GetValue(WM_GetDialogItem(pMsg->hWin, ID_RADIO_0));
-			
+
+				Set.circletime = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_0 ));
+				Set.circleinterval = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_1));			
+				Set.circlespeed = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_2 ));
+				Set.outspeed= SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_3 ));
+
+				Set.lighttime = SPINBOX_GetValue(WM_GetDialogItem(pMsg->hWin,ID_SPINBOX_4 ));			
 				Setting_Save();
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
@@ -587,8 +595,8 @@ SetText(hItem,String[Find_Str("")][Set.language]);
 *
 *       CreateWindow
 */
-WM_HWIN SettingWindow(void);
-WM_HWIN SettingWindow(void) {
+WM_HWIN SettingWindow2(void);
+WM_HWIN SettingWindow2(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
