@@ -1402,10 +1402,22 @@
               <FileType>1</FileType>
               <FilePath>..\control\temp_om.c</FilePath>
             </File>
+            <File>
+              <FileName>command.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\control\command.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Readme</GroupName>
+          <Files>
+            <File>
+              <FileName>IO.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Readme\IO.txt</FilePath>
+            </File>
+          </Files>
         </Group>
       </Groups>
     </Target>

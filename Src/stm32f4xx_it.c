@@ -64,11 +64,13 @@ void NMI_Handler(void)
 /**
 * @brief This function handles Hard fault interrupt.
 */
+extern void All_Stop();
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
 	printf("hardfault error\r\n");
   /* USER CODE END HardFault_IRQn 0 */
+	All_Stop();
   while (1)
   {
   }
@@ -218,5 +220,16 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 
+extern UART_HandleTypeDef huart3;
+void USART3_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART2_IRQn 0 */
+
+  /* USER CODE END USART2_IRQn 0 */
+  HAL_UART_IRQHandler(&huart3);
+  /* USER CODE BEGIN USART2_IRQn 1 */
+
+  /* USER CODE END USART2_IRQn 1 */
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

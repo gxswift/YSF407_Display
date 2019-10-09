@@ -19,6 +19,7 @@
 #include "WM.h"
 #include "temp.h"
 #include "control.h"
+#include "command.h"
 /**
   * 函数功能: 系统时钟配置
   * 输入参数: 无
@@ -102,9 +103,9 @@ static void vTaskGUI(void *pvParameters)//显示
 	WM_SetCreateFlags(WM_CF_MEMDEV);
 	GUI_Init();
 	Skin();
-	CreateWindow();
+	HAL_Delay(100);
 	HeadWindow();
-
+	CreateWindow();
 	while (1)
 	{
 		GUI_Exec();
@@ -125,11 +126,7 @@ static void vTaskTimer(void *pvParameters)//计时，传感器
 	TickType_t Tick;
 	
 	vTaskDelay(100);
-	MX_DMA_Init();
-  MX_ADC1_Init();
-	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, 1)!= HAL_OK)
-	{
-	}
+
 	Tick  = xTaskGetTickCount();
 	while(1)
 	{		
@@ -165,6 +162,8 @@ static void vTaskScreen(void *pvParameters)//屏保
 
 static void vTaskFun(void *pvParameters)//控制
 {
+	uint16_t cnt = 0;
+
 	while(1)
 	{
 		HAL_GPIO_TogglePin(LED3_GPIO,LED3_GPIO_PIN);
@@ -173,16 +172,38 @@ static void vTaskFun(void *pvParameters)//控制
 	}
 }
 
-//static void vTaskTouchtest(void *pvParameters)
-//{
-//	GUI_PID_STATE State;
-//	while(1)
-//	{
-//		GUI_PID_GetState(&State);
-//		printf("x:%d\ty:%d\r\n",State.x,State.y);
-//		vTaskDelay(300);
-//	}
-//}
+QueueHandle_t xQueue;
+//xQueueSend(xQueue1,(void *) &ucCount,(TickType_t)10)
+
+//uint8_t cmd[] = "1test\r\n";//{0xaa,0x00};
+static void vTaskCom(void *pvParameters)
+{
+//	cmd[0] = '1';//不加就是2，why？
+//	HAL_UART_Transmit(&huart3, cmd, 7, 20);	
+	uint8_t mode = 1;
+	BaseType_t xResult;
+	
+	xQueue = xQueueCreate( 10,sizeof (uint8_t));
+	if (xQueue == 0)
+	{
+		printf("创建失败\r\n");
+	}
+	MX_USART3_UART_Init();
+	Uart3_IT();
+	while(1)
+	{
+		xResult = xQueueReceive(xQueue,&mode,10);
+		if (xResult == pdPASS)
+		{
+			printf("消息%d\r\n",mode);
+		}
+		else
+			mode = 1;
+		
+		Send_Data(mode);
+		vTaskDelay(20);
+	}
+}
 
 void HAL_Delay(__IO uint32_t Delay)
 {
@@ -193,7 +214,7 @@ void HAL_Delay(__IO uint32_t Delay)
 //{
 //	return xTaskGetTickCount();
 //}
-
+extern uint8_t r_temp;
 int main(void)
 {
 	SCB->VTOR = FLASH_BASE | 0x10000;//设置偏移量
@@ -204,18 +225,22 @@ int main(void)
   SystemClock_Config();
   __HAL_RCC_CRC_CLK_ENABLE();
   MX_DEBUG_USART_Init();
+	
   LED_GPIO_Init();
 	MX_GPIO_Init();
 	MX_RTC_Init();
   /* 电阻触摸相关GPIO初始化 */
   Touch_Init_GPIO();
   lcd_id=BSP_LCD_Init();  
-  /* 初始化GUI */
-//  GUI_Init();	
 	LCD_BK_ON();
-	
 	Setting_Init();
-	
+
+	MX_DMA_Init();
+  MX_ADC1_Init();
+	if(HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, 1)!= HAL_OK)
+	{
+	}
+
 	xTaskCreate(vTaskGUI,
 							"vTaskGUI",
 							4096,
@@ -224,13 +249,13 @@ int main(void)
 							NULL);
 	xTaskCreate(vTaskTouch,
 							"vTaskTouch",
-							512,
+							256,
 							NULL,
 							3,
 							NULL);
 	xTaskCreate(vTaskTimer,
 							"vTaskTimer",
-							512,
+							256,
 							NULL,
 							2,
 							NULL);
@@ -238,27 +263,22 @@ int main(void)
 							"vTaskScreen",
 							256,
 							NULL,
-							4,
+							2,
 							NULL);
 	xTaskCreate(vTaskFun,
 							"vTaskFun",
-							512,
+							256,
 							NULL,
 							2,
 							NULL);
-//		xTaskCreate(vTaskTouchtest,
-//							"vTaskTouchtest",
-//							512,
-//							NULL,
-//							2,
-//							NULL);
+	xTaskCreate(vTaskCom,
+						"vTaskCom",
+						512,
+						NULL,
+						2,
+						NULL);
 	vTaskStartScheduler();
-//  while (1)
-//  {
-//		LCD_BK_ON();
-//    MainTask();    
-//  }
 }
 
 
-/******************* (C) COPYRIGHT 2015-2020 硬石嵌入式开发团队 *****END OF FILE****/
+

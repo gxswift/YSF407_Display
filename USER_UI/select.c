@@ -31,7 +31,6 @@
 */
 #define ID_WINDOW_0 (GUI_ID_USER + 0x00)
 #define ID_ICONVIEW_0 (GUI_ID_USER + 0x01)
-#define ID_BUTTON_0 (GUI_ID_USER + 0x11)
 
 
 // USER START (Optionally insert additional defines)
@@ -53,7 +52,6 @@
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
-//	{ BUTTON_CreateIndirect, "Return", ID_BUTTON_0, 330, 230, 80, 40, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -106,32 +104,15 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		break;
 	
 	case WM_INIT_DIALOG:
-				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
-				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
-				BUTTON_SetText(hItem,String[Find_Str("Return")][Set.language]);
+//				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
+//				BUTTON_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+//				BUTTON_SetText(hItem,String[Find_Str("Return")][Set.language]);
 		break;
 	
   case WM_NOTIFY_PARENT:
     Id    = WM_GetId(pMsg->hWinSrc);
     NCode = pMsg->Data.v;
     switch(Id) {
-		case ID_BUTTON_0: // Notifications sent by 'Button'
-      switch(NCode) {
-      case WM_NOTIFICATION_CLICKED:
-        // USER START (Optionally insert code for reacting on notification message)
-        // USER END
-        break;
-      case WM_NOTIFICATION_RELEASED:
-        // USER START (Optionally insert code for reacting on notification message)
-				hItem = pMsg->hWin;
-				WM_DeleteWindow(hItem);
-				CreateWindow();
-        // USER END
-        break;
-      // USER START (Optionally insert additional code for further notification handling)
-      // USER END
-      }
-      break;
     case ID_ICONVIEW_0: // Notifications sent by 'Iconview'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:

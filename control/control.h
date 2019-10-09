@@ -35,6 +35,7 @@ typedef struct
 	uint32_t wait;
 	uint32_t circle;
 	uint32_t out;
+	uint32_t tick;
 }TIME;
 
 
@@ -45,6 +46,7 @@ typedef struct
 	uint8_t outflag;
 	uint8_t heaterflag;
 	uint8_t circleflag;	
+	uint8_t handflag;
 	//水位标志
 	uint8_t lowflag;
 	uint8_t highflag;
@@ -52,7 +54,7 @@ typedef struct
 	
 	uint8_t temperature;//温度
 	uint8_t hwinflag;//主窗口标志
-	
+	uint8_t flash;//闪
 	uint8_t connect;//连接
 	uint32_t totalvolume;//总流量
 }STATE;

@@ -23,10 +23,12 @@
 #define DEBUG_USART_IRQn                             USART1_IRQn
 /* 扩展变量 ------------------------------------------------------------------*/
 extern UART_HandleTypeDef husart_debug;
-
+extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
 /* 函数声明 ------------------------------------------------------------------*/
 void MX_DEBUG_USART_Init(void);
-
+void MX_USART2_UART_Init(void);
+void MX_USART3_UART_Init(void);
 
 #endif  /* __BSP_DEBUG_USART_H__ */
 

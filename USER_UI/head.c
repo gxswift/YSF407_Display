@@ -112,7 +112,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			GUI_SetFont(GUI_FONT_13B_1);
 		if (Set.visable)
 		{
-			sprintf(str_time,"%2d:%2d:%2d",RTC_Time.Hours,RTC_Time.Minutes,RTC_Time.Seconds);
+			sprintf(str_time,"%02d:%02d:%02d",RTC_Time.Hours,RTC_Time.Minutes,RTC_Time.Seconds);
 			GUI_DispStringHCenterAt(str_time,440,2);	
 			sprintf(str_time,"20%02d/%d/%d",RTC_Date.Year,RTC_Date.Month,RTC_Date.Date);
 			GUI_DispStringHCenterAt(str_time,440,17);

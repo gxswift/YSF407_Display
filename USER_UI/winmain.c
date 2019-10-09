@@ -36,8 +36,8 @@
 
 #define ID_PROGBAR_0 (GUI_ID_USER + 0x01)
 
-#define ID_BUTTON_0 (GUI_ID_USER + 0x03)
-#define ID_BUTTON_1 (GUI_ID_USER + 0x04)
+#define ID_BUTTON_0 (GUI_ID_USER + 0x02)
+//#define ID_BUTTON_1 (GUI_ID_USER + 0x04)
 
 #define ID_TEXT_0 (GUI_ID_USER + 0x05)
 #define ID_TEXT_1 (GUI_ID_USER + 0x06)
@@ -46,9 +46,6 @@
 #define ID_TEXT_3 (GUI_ID_USER + 0x08)
 #define ID_TEXT_4 (GUI_ID_USER + 0x09)
 #define ID_TEXT_5 (GUI_ID_USER + 0x0a)
-#define ID_TEXT_6 (GUI_ID_USER + 0x0b)
-#define ID_TEXT_7 (GUI_ID_USER + 0x0c)
-#define ID_TEXT_8 (GUI_ID_USER + 0x0d)
 
 // USER START (Optionally insert additional defines)
 // USER END
@@ -69,23 +66,19 @@
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 30, 480, 320, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "", ID_BUTTON_0, 350, 180, 80, 80, 0, 0x0, 0 },
 
-//  { BUTTON_CreateIndirect, "Status", ID_BUTTON_0, 350, 40, 80, 80, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Setting", ID_BUTTON_1, 350, 180, 80, 80, 0, 0x0, 0 },
 	{ TEXT_CreateIndirect, "", ID_TEXT_0, 200, 30, 90, 50, 0, 0x0, 0 },//温度
   { TEXT_CreateIndirect, "--", ID_TEXT_1, 200, 90, 90, 50, 0, 0x0, 0 },
 	{ TEXT_CreateIndirect, "", ID_TEXT_2, 200, 150, 90, 50, 0, 0x0, 0 },//状态
 
 	{ PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 20, 25, 80, 230, 1, 0x0, 0 },
-//	{ TEXT_CreateIndirect, "--o", ID_TEXT_3, 100, 200, 35, 20, 0, 0x0, 0 },
-//	{ TEXT_CreateIndirect, "--o", ID_TEXT_4, 100, 60, 35, 20, 0, 0x0, 0 },
-//	{ TEXT_CreateIndirect, "--o", ID_TEXT_5, 100, 30, 35, 20, 0, 0x0, 0 },
 	
-	{ TEXT_CreateIndirect, "0", ID_TEXT_6, 200, 210, 90, 50, 0, 0x0, 0 },
+	{ TEXT_CreateIndirect, "0", ID_TEXT_3, 200, 210, 90, 50, 0, 0x0, 0 },
 	
-	{ TEXT_CreateIndirect, "", ID_TEXT_7, 380, 30, 90, 50, 0, 0x0, 0 },//OFF
+	{ TEXT_CreateIndirect, "", ID_TEXT_4, 380, 30, 90, 50, 0, 0x0, 0 },//OFF 循环开关
 
-	{ TEXT_CreateIndirect, "", ID_TEXT_8, 380, 90, 100, 50, 0, 0x0, 0 },//Connect
+	{ TEXT_CreateIndirect, "", ID_TEXT_5, 380, 90, 100, 50, 0, 0x0, 0 },//Connect
 	
 	
   // USER START (Optionally insert additional widgets)
@@ -103,16 +96,15 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 
 extern WM_HWIN Display_set(void);
 extern WM_HWIN SelectWindow(void);
+extern WM_HWIN SettingWindow(void);
 
 extern GUI_CONST_STORAGE GUI_FONT GUI_FontB24;
 
-extern const char *HZStr[];
-extern uint8_t Lang_Flag;
 
 WM_HWIN H_Hand;
 WM_HTIMER hTimer;
 
-extern GUI_CONST_STORAGE GUI_BITMAP bmoperate;
+//extern GUI_CONST_STORAGE GUI_BITMAP bmoperate;
 extern GUI_CONST_STORAGE GUI_BITMAP bmbasicset;
 
 // USER END
@@ -179,35 +171,20 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	int i;
   // USER START (Optionally insert additional variables)
 	static uint8_t connect = 0;
+	static uint8_t first = 1;
+//	static uint8_t fuck;
   // USER END
 
   switch (pMsg->MsgId) {
 	case WM_INIT_DIALOG:	
 
-			for(i = 0;i < 3;i++)
-			{	
-				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0+i);
-				TEXT_SetFont(hItem,GUI_FONT_24B_1);
-			}
-			for(i = 0;i < 2;i++)
-			{
-				hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0+i);
-				BUTTON_SetFont(hItem,GUI_FONT_20B_1);	
-			}
-				
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
 			BUTTON_SetFont(hItem,&GUI_FontB24);	
-			//BUTTON_SetText(hItem,"\xE8\xAE\xBE\xE7\xBD\xAE");
-	//		BUTTON_SetText(hItem,HZStr[12]);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmoperate);
-			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmoperate);
-			
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1);
-			BUTTON_SetFont(hItem,&GUI_FontB24);	
-	//		BUTTON_SetText(hItem,HZStr[0]);
 			BUTTON_SetBitmap(hItem,BUTTON_BI_PRESSED,&bmbasicset);
 			BUTTON_SetBitmap(hItem,BUTTON_BI_UNPRESSED,&bmbasicset);
-		
+
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0);
+			TEXT_SetFont(hItem,GUI_FONT_24B_1);		
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
 			TEXT_SetTextColor(hItem,GUI_RED);
@@ -215,48 +192,28 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
 			TEXT_SetTextColor(hItem,GUI_ORANGE);
-//			TEXT_SetFont(hItem,&GUI_FontB24);
-//			TEXT_SetText(hItem,HZStr[13]);
-			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
-//			TEXT_SetText(hItem,String[Find_Str("Standby")][Set.language]);
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_8);			
 			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
 			
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_7);			
-			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
-			
-//水位标志
-/*
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
-			TEXT_SetFont(hItem, GUI_FONT_20_1);
-			TEXT_SetTextColor(hItem, GUI_GREEN);
-
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
-			TEXT_SetFont(hItem, GUI_FONT_20_1);
-			TEXT_SetTextColor(hItem, GUI_GREEN);
-
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);
-			TEXT_SetFont(hItem, GUI_FONT_20_1);
-			TEXT_SetTextColor(hItem, GUI_RED);
-			
-*/
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
 			TEXT_SetFont(hItem, GUI_FONT_24B_1);
-			TEXT_SetTextColor(hItem, GUI_GREEN);
+			TEXT_SetTextColor(hItem, GUI_GREEN);				
+			
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);			
+			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
+			
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);			
+			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);			
 
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);
 			PROGBAR_SetMinMax(hItem, 0, 100);
-			PROGBAR_SetValue(hItem, 10);
-	/*		PROGBAR_SetValue(hItem, 50);
-			PROGBAR_SetValue(hItem, 85);
-			PROGBAR_SetValue(hItem, 95);*/
+			PROGBAR_SetValue(hItem, 10);//50,85,95
+
 			PROGBAR_SetBarColor(hItem, 0, GUI_GREEN);
 			PROGBAR_SetBarColor(hItem, 1, GUI_LIGHTYELLOW);
 		break;
 	case WM_TIMER:
 			//显示温度
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0);
-	
 			if (State.temperature == 150)
 				sprintf((char*)str_temp,"%s","--");
 			else if (State.temperature == 151)
@@ -294,7 +251,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			}
 			TEXT_SetText(hItem,str_temp);
 			//总流量
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_6);
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
 			sprintf((char*)str_temp,"%d",State.totalvolume);
 			TEXT_SetText(hItem,str_temp);
 			
@@ -332,9 +289,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			}
 			PROGBAR_SetValue(hItem, propset);
 			
-			
 			//循环
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_7);
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
 			if (Set.circleinterval == 0 || Set.circletime == 0)
 			{
 				sprintf((char*)str_temp,String[Find_Str(" OFF")][Set.language]);
@@ -347,40 +303,38 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			{
 				sprintf((char*)str_temp,String[Find_Str("Wait")][Set.language]);
 			}
-//			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
 			TEXT_SetText(hItem,str_temp);
 			//连接			
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_8);			
-//			TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
-			if (State.connect)
-			{
-				TEXT_SetTextColor(hItem,GUI_GREEN);
-				TEXT_SetText(hItem,String[Find_Str("Connect")][Set.language]);
-			}
-			else
-			{
+//			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);			
+//			if (State.connect)
+//			{
+//				TEXT_SetTextColor(hItem,GUI_GREEN);
+//				TEXT_SetText(hItem,String[Find_Str("Connect")][Set.language]);
+//			}
+//			else
+//			{
 
-				TEXT_SetTextColor(hItem,GUI_RED);
-				TEXT_SetText(hItem,String[Find_Str("Disconnect")][Set.language]);//connect?"":
-				connect ^= 1 ;
-/*
-				if (connect)
-				{
-					TEXT_SetText(hItem,String[Find_Str("Disconnect")][Set.language]);
-				}
-				else
-				{
-					TEXT_SetText(hItem,"");
-				}
-				
-				*/
-			/*
-				if (connect)
-					TEXT_SetTextColor(hItem,GUI_WHITE);
-				*/
-			}
+//				TEXT_SetTextColor(hItem,GUI_RED);
+//				TEXT_SetText(hItem,String[Find_Str("Disconnect")][Set.language]);//connect?"":
+//			//	connect ^= 1 ;
+///*
+//				if (connect)
+//				{
+//					TEXT_SetText(hItem,String[Find_Str("Disconnect")][Set.language]);
+//				}
+//				else
+//				{
+//					TEXT_SetText(hItem,"");
+//				}
+//				
+//				*/
+//			/*
+//				if (connect)
+//					TEXT_SetTextColor(hItem,GUI_WHITE);
+//				*/
+//			}
 
-			WM_RestartTimer(pMsg->Data.v, 436);
+			WM_RestartTimer(pMsg->Data.v, 236);
 		break;
 			
 	case WM_PAINT:
@@ -391,61 +345,25 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		GUI_DispStringHCenterAt("dotcom",240,65);
 	
 		GUI_SetColor(GUI_YELLOW);	
-
-	
-/*
-		TEXT_SetFont(hItem,Set.language?&GUI_FontB24:&GUI_Font20_1);
-		TEXT_SetText(hItem,String[i+1][Set.language]);
-	*/
-	GUI_SetFont(Set.language?&GUI_FontB24:&GUI_Font20_1);
-	//GUI_DispStringAt(String[Find_Str("Temperature")][Set.language],140,30);
-
-	if (Set.language == 0)//太长
-		GUI_DispStringAt("Temp",140,30);
-	else
-		GUI_DispStringAt(String[Find_Str("Temperature")][Set.language],140,30);		
-	GUI_DispStringAt(String[Find_Str("Heat")][Set.language],140,90);
-	GUI_DispStringAt(String[Find_Str("Status")][Set.language],140,150);
-	GUI_DispStringAt(String[Find_Str("Flow")][Set.language],140,210);
-	
-	
-	GUI_DispStringAt(String[Find_Str("Circle")][Set.language],320,30);
-	
-	GUI_SetFont(&GUI_Font20_1);
-	GUI_DispStringAt("Drop",320,90);
-	/*
-		if (Lang_Flag)
-		{
-			GUI_SetFont(&GUI_FontB24);
-			GUI_DispStringAt(HZStr[1],140,30);
-			GUI_DispStringAt(HZStr[13],140,90);	
-			GUI_DispStringAt(HZStr[7],140,150);	
-			GUI_DispStringAt(HZStr[16], 140, 210);
-		}
+		GUI_SetFont(Set.language?&GUI_FontB24:&GUI_Font20_1);
+		//GUI_DispStringAt(String[Find_Str("Temperature")][Set.language],140,30);
+		if (Set.language == 0)//太长
+			GUI_DispStringAt("Temp",140,30);
 		else
-		{
-			GUI_SetFont(GUI_FONT_24B_1);
-			GUI_DispStringAt("TEMP",40,40);
-			GUI_DispStringAt("Volume",40,100);	
-			GUI_DispStringAt("Status",40,160);	
-		}
-	*/
+			GUI_DispStringAt(String[Find_Str("Temperature")][Set.language],140,30);		
+		GUI_DispStringAt(String[Find_Str("Heat")][Set.language],140,90);
+		GUI_DispStringAt(String[Find_Str("Status")][Set.language],140,150);
+		GUI_DispStringAt(String[Find_Str("Flow")][Set.language],140,210);
+		GUI_DispStringAt(String[Find_Str("Circle")][Set.language],320,30);
+		GUI_SetFont(&GUI_Font20_1);
+		GUI_DispStringAt("Drop",320,90);
+
 		GUI_SetFont(GUI_FONT_24B_1);
 		GUI_DispStringAt("C",245,30);
-//		GUI_DispStringAt("mL",270,210);
 	
 		GUI_SetFont(GUI_FONT_8_1);
 		GUI_DispStringAt("o",240,30);
-	/*
-		GUI_SetFont(&GUI_Font24);
-		GUI_DispStringAt("\xE8\xAE\xBE\xE7\xBD\xAE",40,160);
-	
-			GUI_SetFont(&GUI_FontB24);
-		GUI_DispStringAt("\xE8\xAE\xBE\xE7\xBD\xAE",140,160);
-		
-				GUI_SetFont(&GUI_FontAA24);
-		GUI_DispStringAt("\xE8\xAE\xBE\xE7\xBD\xAE",140,190);
-		*/
+
 		//水位
 		GUI_SetTextMode(GUI_TM_TRANS);
 		GUI_SetFont(GUI_FONT_20_1);
@@ -459,7 +377,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     Id    = WM_GetId(pMsg->hWinSrc);
     NCode = pMsg->Data.v;
     switch(Id) {
-    case ID_BUTTON_0: // Notifications sent by 'Setting'
+    case ID_BUTTON_0: // Notifications sent by 'Status'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
@@ -467,29 +385,17 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-				hItem = pMsg->hWin;
-				WM_DeleteWindow(hItem);
-			H_Hand = 	Display_set();
-        // USER END
-        break;
-      // USER START (Optionally insert additional code for further notification handling)
-      // USER END
-      }
-      break;
-    case ID_BUTTON_1: // Notifications sent by 'Status'
-      switch(NCode) {
-      case WM_NOTIFICATION_CLICKED:
-        // USER START (Optionally insert code for reacting on notification message)
-        // USER END
-        break;
-      case WM_NOTIFICATION_RELEASED:
-        // USER START (Optionally insert code for reacting on notification message)
+
 			WM_DeleteTimer(hTimer);			
 				hItem = pMsg->hWin;
 				WM_DeleteWindow(hItem);
+			if (first)//第一次跳转后,返回主页面会进入hardfault
+			{
+				first = 0;
+				SettingWindow();
+			}
+			else
 				SelectWindow();
-				//SettingWindow();
-
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -518,6 +424,18 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 *
 *       CreateWindow
 */
+
+
+WM_HWIN CreateWindow(void);
+WM_HWIN CreateWindow(void) {
+  WM_HWIN hWin;
+	
+  hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
+	hTimer = WM_CreateTimer(hWin, 0, 50, 0);
+	
+  return hWin;
+}
+
 void Skin()
 {
 	Radio_Skin();
@@ -526,16 +444,12 @@ void Skin()
 	GUI_UC_SetEncodeUTF8();
 }
 
-WM_HWIN CreateWindow(void);
-WM_HWIN CreateWindow(void) {
-  WM_HWIN hWin;
-	
-  hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
-	hTimer = WM_CreateTimer(hWin, 0, 500, 0);
-	
-  return hWin;
+void GetFreeRam()
+{
+	uint32_t free,used;
+	free = GUI_ALLOC_GetNumFreeBytes();
+	used = GUI_ALLOC_GetNumUsedBytes();
+	printf("Free = %d,Used = %d\r\n",free,used);
 }
-
-
 
 /*************************** End of file ****************************/

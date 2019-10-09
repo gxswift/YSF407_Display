@@ -128,7 +128,6 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 		case WM_INIT_DIALOG:
 	//	printf("slider_temp = %d\r\n",slider_temp);
 			State.hwinflag = 1;
-			
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_SLIDER_0);
 			SLIDER_SetRange(hItem, 0, 2000);
 			SLIDER_SetValue(hItem,Set.volhand);
@@ -363,6 +362,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 				else
 				{
 					Out_Start(Set.volhand);
+					State.handflag = 1;
 					
 					BUTTON_SetTextColor(hItem,BUTTON_CI_UNPRESSED,GUI_RED);
 					BUTTON_SetText(hItem,String[Find_Str("Stop")][Set.language]);
@@ -398,6 +398,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 WM_HWIN Display_set(void);
 WM_HWIN Display_set(void) {
   WM_HWIN hWin;
+
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
 
   return hWin;

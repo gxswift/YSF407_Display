@@ -133,7 +133,8 @@ void Out_Stop()
 {
 	Set.out = 0;
 	Time.out = 0;
-
+	State.handflag = 0;
+	
 	Pump_Out (0);
 	Out (OFF);
 	State.outflag = 0;
@@ -194,7 +195,7 @@ void Setting_Save()
 void Setting_Init()
 {
 	uint8_t i;
-	if (HAL_RTCEx_BKUPRead(&hrtc,RTC_BKP_DR1 + 8) == 0xff)
+	if (HAL_RTCEx_BKUPRead(&hrtc,RTC_BKP_DR1 + 8) != 1)
 	{
 		Set.vol1 = 300;
 		Set.vol2 = 500;
@@ -309,7 +310,7 @@ void Control()
 			}
 			if (State.temperature < Set.temperature - 2 )
 			{
-				if(State.warnflag == 0 && State.lowflag == 1)
+				if(State.warnflag == 0 && State.lowflag == 1 && Time.tick > 5000)
 				{
 					Heater (ON);
 					State.heaterflag = 1;
@@ -386,7 +387,15 @@ void Control()
 
 
 
-
+void All_Stop()
+{
+	Heater(0);
+	In(0);
+	Out(0);
+	Circle(0);	
+	EN_Set(0);
+	printf("关闭所有功能\r\n");
+}
 
 
 
@@ -400,6 +409,8 @@ void Debug_Print()
 }
 
 extern WM_HWIN H_Hand;
+
+extern void GetFreeRam();
 void TimerTask()
 {
 	static uint8_t cnt,cnt10,cnt500;
@@ -413,15 +424,17 @@ void TimerTask()
 		if (cnt500 > 5)
 		{
 			cnt500 = 0;
+			State.flash ^= 1;
 			HAL_GPIO_TogglePin(LED1_GPIO,LED1_GPIO_PIN);
 	//		Debug_Print();
+	 		GetFreeRam();
 		}
 	}
 	
 	if (Time.wait)
 		Time.wait--;
 	
-	
+	Time.tick++;
 	if (Time.out)//出水
 	{
 		//-------------------------------
@@ -433,7 +446,7 @@ void TimerTask()
 			State.totalvolume++;
 			Time.out--;
 			Time.circle = 0;
-			if (State.hwinflag == 1)
+			if (State.hwinflag == 1 && State.handflag == 1)
 				WM_SendMessageNoPara(H_Hand,WM_USER);
 		}
 		/*
@@ -449,14 +462,9 @@ void TimerTask()
 	}
 }
 //暂不用发送无参变量信号方式，改用窗口定时器自动刷新获取变量
-void Func()
+void Func()//20ms
 {
-	static uint16_t cnt20;
+	Control();
 
-	if (++cnt20 >= 20)//??
-	{
-		cnt20 = 0;
-		Control();
-	}
 }
 
