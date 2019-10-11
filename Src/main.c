@@ -28,6 +28,10 @@
   */
 	
 uint32_t ADC_Value;
+QueueHandle_t xQueue;
+
+
+
 void SystemClock_Config(void)
 {
 
@@ -100,12 +104,18 @@ extern WM_HWIN HeadWindow(void);
 extern void Skin();
 static void vTaskGUI(void *pvParameters)//显示
 {
+	uint8_t cmd;
 	WM_SetCreateFlags(WM_CF_MEMDEV);
 	GUI_Init();
 	Skin();
 	HAL_Delay(100);
 	HeadWindow();
 	CreateWindow();
+	cmd = 0;
+	xQueueSend(xQueue,(void *) &cmd,(TickType_t)10);
+	
+	cmd = 4;
+	xQueueSend(xQueue,(void *) &cmd,(TickType_t)10);
 	while (1)
 	{
 		GUI_Exec();
@@ -121,6 +131,9 @@ static void vTaskTouch(void *pvParameters)//触摸
 	}
 }
 
+
+
+
 static void vTaskTimer(void *pvParameters)//计时，传感器
 {
 	TickType_t Tick;
@@ -134,6 +147,14 @@ static void vTaskTimer(void *pvParameters)//计时，传感器
 		TimerTask();
 	}
 }
+
+static xTimerHandle xTimer = NULL;
+static void vTimerCallback( xTimerHandle pxTimer )
+{
+   TimerTask();
+}
+
+
 
 static void vTaskScreen(void *pvParameters)//屏保
 {
@@ -172,8 +193,8 @@ static void vTaskFun(void *pvParameters)//控制
 	}
 }
 
-QueueHandle_t xQueue;
-//xQueueSend(xQueue1,(void *) &ucCount,(TickType_t)10)
+
+
 
 //uint8_t cmd[] = "1test\r\n";//{0xaa,0x00};
 static void vTaskCom(void *pvParameters)
@@ -182,7 +203,7 @@ static void vTaskCom(void *pvParameters)
 //	HAL_UART_Transmit(&huart3, cmd, 7, 20);	
 	uint8_t mode = 1;
 	BaseType_t xResult;
-	
+//xQueueSend(xQueue1,(void *) &ucCount,(TickType_t)10)	
 	xQueue = xQueueCreate( 10,sizeof (uint8_t));
 	if (xQueue == 0)
 	{
@@ -214,7 +235,7 @@ void HAL_Delay(__IO uint32_t Delay)
 //{
 //	return xTaskGetTickCount();
 //}
-extern uint8_t r_temp;
+
 int main(void)
 {
 	SCB->VTOR = FLASH_BASE | 0x10000;//设置偏移量
@@ -253,12 +274,22 @@ int main(void)
 							NULL,
 							3,
 							NULL);
-	xTaskCreate(vTaskTimer,
-							"vTaskTimer",
-							256,
-							NULL,
-							2,
-							NULL);
+//	xTaskCreate(vTaskTimer,
+//							"vTaskTimer",
+//							256,
+//							NULL,
+//							4,
+//							NULL);
+	
+	xTimer = xTimerCreate ("Timer", 1, pdTRUE, ( void * ) 1, vTimerCallback );
+	if( xTimer != NULL )
+  {
+    if( xTimerStart( xTimer, 100 ) != pdPASS )
+    {
+      /* The timer could not be set into the Active state. */
+    }
+  }	
+	
 	xTaskCreate(vTaskScreen,
 							"vTaskScreen",
 							256,
@@ -279,6 +310,7 @@ int main(void)
 						NULL);
 	vTaskStartScheduler();
 }
+
 
 
 

@@ -118,6 +118,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
+          <Name>栗"</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -156,7 +157,7 @@
           <Type>0</Type>
           <LineNumber>240</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134332958</Address>
+          <Address>134332994</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -166,6 +167,38 @@
           <Filename>C:\Users\IT\Desktop\纭煶绋嬪簭鍙傝€?Drink_UI_APP\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rtc.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\YS_F4Pro\../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.c\240</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>37</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134334706</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>C:\Users\IT\Desktop\纭煶绋嬪簭鍙傝€?Drink_UI_APP\control\command.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\YS_F4Pro\../control/command.c\37</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>46</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134334748</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>C:\Users\IT\Desktop\纭煶绋嬪簭鍙傝€?Drink_UI_APP\control\command.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\YS_F4Pro\../control/command.c\46</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -178,6 +211,11 @@
           <count>1</count>
           <WinNumber>1</WinNumber>
           <ItemText>Recv</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>r_temp</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
@@ -1737,7 +1775,7 @@
 
   <Group>
     <GroupName>FreeRTOS</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

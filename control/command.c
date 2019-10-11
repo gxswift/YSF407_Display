@@ -7,9 +7,8 @@
 
 
 uint8_t r_temp;
-uint8_t Recv[15];
+uint8_t Recv[20];
 uint8_t Rcnt;
-//RING Ring3;
 
 void Uart3_IT()
 {
@@ -19,11 +18,12 @@ void Uart3_IT()
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
+	uint16_t i;
 	if (huart == &huart3)
 	{
 //用数组		
 		Recv[Rcnt] = r_temp;
-		if (Rcnt < 20)
+		if (Rcnt < 15)
 			Rcnt++;		
 ////用队列		
 //		if(Ring3.Lenth<255)
@@ -32,10 +32,27 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 //		}
 //		
 //		
-		HAL_UART_Receive_IT(&huart3, &r_temp, 1);
+		if (HAL_OK !=HAL_UART_Receive_IT(&huart3, &r_temp, 1))
+		{
+			printf("IT error!\r\n");
+			
+			huart3.RxState = HAL_UART_STATE_READY;
+			__HAL_UNLOCK(&huart3);
+			HAL_UART_Receive_IT(&huart3, &r_temp, 1);
+			return;
+		}
 	}
 }
 
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+    if(__HAL_UART_GET_FLAG(huart,UART_FLAG_ORE) != RESET) 
+    {
+        __HAL_UART_CLEAR_OREFLAG(huart);
+        HAL_UART_Receive_IT(huart,(uint8_t *)&r_temp,1);
+			printf("run over\r\n");
+    }
+}
 
 CMD Cmd=
 {
@@ -46,8 +63,8 @@ CMD Cmd=
 
 DROP Drop = 
 {
-	.func = 2,
-	.color = 0x888888,
+	.func = 1,
+	.color = 0x202020,
 	.connect = 0
 };
 
@@ -115,11 +132,16 @@ void Get_Key()
 	Cmd.len = 1;
 }
 //A1
+uint8_t buff[4];
 void Set_LED(uint8_t fun,uint32_t color)
 {
 	Cmd.cmd = 0xA1;
 	Cmd.len = 5;
-	Cmd.data = &Drop.func;
+	buff[0] = fun;
+	buff[1] = color>>16;
+	buff[2] = color>>8;
+	buff[3] = color;
+	Cmd.data = buff;
 }
 
 
@@ -175,7 +197,7 @@ uint8_t Get_Data(uint8_t *buff)
 	{
 		case 0x0A://key
 			Drop.key = buff[4];
-			if (State.outflag)
+			if (State.outflag && Drop.key)
 			{
 				Out_Stop();
 				printf("停止出水\r\n");
@@ -210,127 +232,7 @@ uint8_t Get_Data(uint8_t *buff)
 	}
 	return 0;
 }
-/*
 
-uint8_t CanRead(RING *ring)
-{
-	return ring->Lenth;
-}
-
-uint8_t Read_Data(RING *ring) 
-{
-	ring->Lenth--;
-	return ring->Data[ring->Read++];
-}
-
-void Write_Data(RING *ring,uint8_t data)
-{
-	ring->Data[ring->Write] = data;
-	ring->Write++;
-	ring->Lenth++;
-}
-int8_t GetOnePacket(RING *rb, uint8_t *data, uint8_t *len)
-{
-    uint8_t ret = 0;
-    uint16_t sum = 0;
-    uint8_t i = 0;
-    uint8_t tmpData;
-    uint8_t tmpLen = 0;
-    uint16_t tmpCount = 0;
-    static uint8_t protocolFlag = 0;
-    static uint16_t protocolCount = 0;
-    static uint8_t lastData = 0;
-    uint8_t *protocolBuff = data;
-
-    tmpLen = CanRead(rb);
-    if(0 == tmpLen)
-    {
-        return -1;
-    }
-
-    for(i=0; i<tmpLen; i++)
-    {
-        //ret = Read_Data(rb, &tmpData, 1);
-        ret = 1;
-			tmpData = Read_Data(rb);
-		//	printf("%3x",tmpData);
-			HAL_UART_Transmit(&huart3,(uint8_t *)&tmpData,1,20);
-        if(0 != ret)
-        {
-            if((0xAA == lastData) && (0x01 == tmpData))
-            {
-                if(0 == protocolFlag)
-                {
-                    protocolBuff[0] = 0x55;
-                    protocolBuff[1] = 0x01;
-                    protocolCount = 2;
-                    protocolFlag = 1;
-                }
-                else
-                {
-                    if((protocolCount > 2) && (protocolCount != tmpCount))//
-                    {
-                        protocolBuff[0] = 0x55;
-                        protocolBuff[1] = 0x01;
-                        protocolCount = 2;
-                    }
-                }
-            }
-            else
-            {
-                if(1 == protocolFlag)
-                {
-                    protocolBuff[protocolCount] = tmpData;
-                    protocolCount++;
-
-                    if(protocolCount > 2)
-                    {
-                       tmpCount = protocolBuff[2] + 5;
-                        if(protocolCount == tmpCount)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-            lastData = tmpData;
-        }
-    }
-
-    if((protocolCount > 4) && (protocolCount == tmpCount))
-    {
-		sum = CRC16(0xA001,protocolBuff, protocolCount-2);
-
-        if((protocolBuff[protocolCount-2]|(protocolBuff[protocolCount-1]<<8)) == sum)
-        {
-            memcpy(data, protocolBuff, tmpCount);
-            *len = tmpCount;
-            protocolFlag = 0;
-
-            protocolCount = 0;
-            lastData = 0;
-
-            return 0;
-        }
-        else
-        {
-					//----------------------------
-					//增加校验出错的反馈，带关键字   
-					//----------------------------
-						memcpy(data, protocolBuff, tmpCount);
-            *len = tmpCount;
-            protocolFlag = 0;
-
-            protocolCount = 0;
-            lastData = 0;
-						printf("校验失败\r\n");
-            return -2;
-        }
-    }
-    return 1;
-}
-uint8_t Ring_data[20],buffer_len;
-*/
 void Send_Data(uint8_t mode)
 {
 	uint8_t send[15];
@@ -357,7 +259,7 @@ void Send_Data(uint8_t mode)
 	
 	Protocol_Buffer(&Cmd,send,&len);
 	Rcnt = 0;
-	for(i = 0;i < 10;i++)
+	for(i = 0;i < 15;i++)
 		Recv[i] = 0;
 	HAL_UART_Transmit(&huart3, send, len, 20);
 			HAL_Delay(1);	
@@ -381,7 +283,7 @@ void Send_Data(uint8_t mode)
 
 		if (HAL_GetTick()-start > 500)//手动测试数值设置大
 		{
-			if (cnt < 10)
+			if (cnt < 5)
 				cnt++;
 			else
 			{

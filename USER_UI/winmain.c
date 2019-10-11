@@ -162,7 +162,7 @@ void Progbar_Skin()
 
 
 char str_temp[20];
-uint8_t propval;
+
 uint8_t propset;
 static void _cbDialog(WM_MESSAGE * pMsg) {
 	WM_HWIN hItem;
@@ -172,7 +172,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   // USER START (Optionally insert additional variables)
 	static uint8_t connect = 0;
 	static uint8_t first = 1;
-//	static uint8_t fuck;
+	//降低刷新频率
+	uint8_t oldtemp = 0xff;
+	uint8_t oldheater = 0xff;
+	uint8_t propval = 0xff;
+	
+	static uint8_t sel = 0;
   // USER END
 
   switch (pMsg->MsgId) {
@@ -212,53 +217,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			PROGBAR_SetBarColor(hItem, 1, GUI_LIGHTYELLOW);
 		break;
 	case WM_TIMER:
-			//显示温度
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0);
-			if (State.temperature == 150)
-				sprintf((char*)str_temp,"%s","--");
-			else if (State.temperature == 151)
-				sprintf((char*)str_temp,"%s","XX");
-			else	
-				sprintf((char*)str_temp,"%d",State.temperature);
-			TEXT_SetText(hItem,str_temp);
-			//加热
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
-			if (State.heaterflag)
-			{
-				TEXT_SetTextColor(hItem,GUI_RED);
-				sprintf((char*)str_temp,String[Find_Str("ON")][Set.language]);
-			}
-			else
-			{
-				TEXT_SetTextColor(hItem,GUI_BLACK);
-				sprintf((char*)str_temp,String[Find_Str("OFF")][Set.language]);
-			}
-				TEXT_SetText(hItem,str_temp);
-				
-			//状态	
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
-			if (State.inflag)
-			{
-				sprintf((char*)str_temp,String[Find_Str("Water In")][Set.language]);
-			}
-			else if (State.outflag)
-			{
-				sprintf((char*)str_temp,String[Find_Str("Water Out")][Set.language]);
-			}
-			else
-			{
-				sprintf((char*)str_temp,String[Find_Str("Standby")][Set.language]);
-			}
-			TEXT_SetText(hItem,str_temp);
-			//总流量
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
-			sprintf((char*)str_temp,"%d",State.totalvolume);
-			TEXT_SetText(hItem,str_temp);
-			
+
 			//水量
 			//Gradual_change
-			hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);
-			propval = PROGBAR_GetValue(ID_PROGBAR_0);
+	
 			if(State.lowflag == 0)
 			{
 				if (propset<=8)
@@ -286,8 +248,71 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 					propset+=2;
 				if (propset>=97)
 					propset-=2;
+			}	
+			if (propval != propset)
+			{
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0);
+			//	propval = PROGBAR_GetValue(ID_PROGBAR_0);
+				PROGBAR_SetValue(hItem, propset);
 			}
-			PROGBAR_SetValue(hItem, propset);
+			propval = propset;
+			
+	sel^=1;
+		if (sel)//同时刷新会进入hardfault  ？
+		{			
+			//总流量
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
+			sprintf((char*)str_temp,"%d",State.totalvolume);
+			TEXT_SetText(hItem,str_temp);
+		}
+		else
+		{
+			//显示温度
+			if (oldtemp != State.temperature)
+			{
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_0);
+				if (State.temperature == 150)
+					sprintf((char*)str_temp,"%s","--");
+				else if (State.temperature == 151)
+					sprintf((char*)str_temp,"%s","XX");
+				else	
+					sprintf((char*)str_temp,"%d",State.temperature);
+				TEXT_SetText(hItem,str_temp);
+			}
+			oldtemp = State.temperature;
+			//加热
+			if (oldheater != State.heaterflag)
+			{
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
+				if (State.heaterflag)
+				{
+					TEXT_SetTextColor(hItem,GUI_RED);
+					sprintf((char*)str_temp,String[Find_Str("ON")][Set.language]);
+				}
+				else
+				{
+					TEXT_SetTextColor(hItem,GUI_BLACK);
+					sprintf((char*)str_temp,String[Find_Str("OFF")][Set.language]);
+				}
+					TEXT_SetText(hItem,str_temp);
+			}
+			oldheater = State.heaterflag;
+				
+			//状态	
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_2);
+			if (State.inflag)
+			{
+				sprintf((char*)str_temp,String[Find_Str("Water In")][Set.language]);
+			}
+			else if (State.outflag)
+			{
+				sprintf((char*)str_temp,String[Find_Str("Water Out")][Set.language]);
+			}
+			else
+			{
+				sprintf((char*)str_temp,String[Find_Str("Standby")][Set.language]);
+			}
+			TEXT_SetText(hItem,str_temp);
 			
 			//循环
 			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_4);
@@ -305,35 +330,19 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 			}
 			TEXT_SetText(hItem,str_temp);
 			//连接			
-//			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);			
-//			if (State.connect)
-//			{
-//				TEXT_SetTextColor(hItem,GUI_GREEN);
-//				TEXT_SetText(hItem,String[Find_Str("Connect")][Set.language]);
-//			}
-//			else
-//			{
-
-//				TEXT_SetTextColor(hItem,GUI_RED);
-//				TEXT_SetText(hItem,String[Find_Str("Disconnect")][Set.language]);//connect?"":
-//			//	connect ^= 1 ;
-///*
-//				if (connect)
-//				{
-//					TEXT_SetText(hItem,String[Find_Str("Disconnect")][Set.language]);
-//				}
-//				else
-//				{
-//					TEXT_SetText(hItem,"");
-//				}
-//				
-//				*/
-//			/*
-//				if (connect)
-//					TEXT_SetTextColor(hItem,GUI_WHITE);
-//				*/
-//			}
-
+			hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);			
+			if (State.connect)
+			{
+				TEXT_SetTextColor(hItem,GUI_GREEN);
+				TEXT_SetText(hItem,String[Find_Str("Connect")][Set.language]);
+			}
+			else
+			{
+				TEXT_SetTextColor(hItem,GUI_RED);
+				TEXT_SetText(hItem,String[Find_Str("Disconnect")][Set.language]);//connect?"":
+				//connect ^= 1 ;
+			}
+		}
 			WM_RestartTimer(pMsg->Data.v, 236);
 		break;
 			
@@ -446,7 +455,7 @@ void Skin()
 
 void GetFreeRam()
 {
-	uint32_t free,used;
+	int32_t free,used;
 	free = GUI_ALLOC_GetNumFreeBytes();
 	used = GUI_ALLOC_GetNumUsedBytes();
 	printf("Free = %d,Used = %d\r\n",free,used);

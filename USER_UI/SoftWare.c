@@ -27,7 +27,7 @@
 #include "stm32f4xx_hal.h"
 
 #include "str.h"
-
+#include "command.h"
 /*********************************************************************
 *
 *       Defines
@@ -103,10 +103,19 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	
 		CPU_ID = (uint32_t*)(0x1fff7a10);
 		sprintf(str,"CPU ID:\r\n%08X.%08X.%08X",CPU_ID[0],CPU_ID[1],CPU_ID[2]);
-		GUI_DispStringHCenterAt(str,240,80);
+		GUI_DispStringHCenterAt(str,240,70);
 	
 		sprintf(str,"Compile time:\r\n%s--%s",__DATE__,__TIME__);
-		GUI_DispStringHCenterAt(str,240,140);
+		GUI_DispStringHCenterAt(str,240,120);
+	
+		if (State.connect)
+		{
+			sprintf(str,"Drop version:\r\n%d.%d.%d",Drop.verl,Drop.verl,Drop.verl);
+		}
+		else
+			sprintf(str,"Drop disconnect!");
+		GUI_DispStringHCenterAt(str,240,170);
+	
 		break;
   case WM_INIT_DIALOG:
     //

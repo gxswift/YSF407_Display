@@ -5,14 +5,6 @@
 
 typedef struct
 {
-	uint8_t Read;
-	uint8_t Write;
-	uint8_t Lenth;
-	uint8_t Data[256];
-}RING;
-
-typedef struct
-{
 	uint8_t head;
 	uint8_t add;
 	uint8_t len;
@@ -35,7 +27,8 @@ typedef struct
 	uint8_t connect;
 }DROP;
 
-extern void Send_Data(uint8_t mode);
+void Send_Data(uint8_t mode);
+extern DROP Drop;
 void Uart3_IT();
 
 

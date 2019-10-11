@@ -427,7 +427,7 @@ void TimerTask()
 			State.flash ^= 1;
 			HAL_GPIO_TogglePin(LED1_GPIO,LED1_GPIO_PIN);
 	//		Debug_Print();
-	 		GetFreeRam();
+	// 		GetFreeRam();
 		}
 	}
 	
